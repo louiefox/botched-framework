@@ -32,6 +32,7 @@ for k, v in pairs( file.Find( "botched/vgui/*.lua", "LUA" ) ) do
 	AddCSLuaFile( "botched/vgui/" .. v )
 end
 
+-- CORE --
 util.AddNetworkString( "Botched.SendNotification" )
 function BOTCHED.FUNC.SendNotification( ply, type, time, message )
 	net.Start( "Botched.SendNotification" )
@@ -40,3 +41,22 @@ function BOTCHED.FUNC.SendNotification( ply, type, time, message )
 		net.WriteUInt( (time or 3), 8)
 	net.Send( ply )
 end
+
+util.AddNetworkString( "Botched.SendOpenMenu" )
+function BOTCHED.FUNC.SendOpenMenu( ply, type )
+	net.Start( "Botched.SendOpenMenu" )
+		net.WriteString( type )
+	net.Send( ply )
+end
+
+util.AddNetworkString( "Botched.SendUseOpenMenu" )
+hook.Add( "PlayerSay", "Botched.PlayerSay.MenuCommands", function( ply, text )
+	text = string.lower( text )
+
+	for k, v in pairs( BOTCHED.CONFIG.GENERAL.Menus ) do
+		if( not v.Commands or not v.Commands[text] ) then continue end
+
+		BOTCHED.FUNC.SendOpenMenu( ply, k )
+		return ""
+	end
+end )

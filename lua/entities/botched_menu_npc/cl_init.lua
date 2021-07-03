@@ -37,25 +37,3 @@ function ENT:Draw()
 		cam.End3D2D()
 	end
 end
-
-net.Receive( "Botched.SendUseMenuNPC", function()
-	local ent = net.ReadEntity()
-	if( not IsValid( ent ) ) then return end
-
-	local menuType = ent:GetMenuType()
-	local menuConfig = BOTCHED.DEVCONFIG.MenuTypes[menuType or ""]
-	if( not menuConfig ) then return end
-
-	if( not BOTCHED.TEMP.Menus ) then
-		BOTCHED.TEMP.Menus = {}
-	end
-
-	if( IsValid( BOTCHED.TEMP.Menus[menuType] ) ) then
-		BOTCHED.TEMP.Menus[menuType]:Open()
-	else
-		local menu = vgui.Create( "botched_menu_base" )
-		menu:SetMenuType( menuType )
-
-		BOTCHED.TEMP.Menus[menuType] = menu
-	end
-end )

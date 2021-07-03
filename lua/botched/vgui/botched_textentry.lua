@@ -40,14 +40,13 @@ function PANEL:Init()
 		end
 	end
 	self.textEntry.OnChange = function()
-        if( self.OnChange ) then
-            self.OnChange()
-        end
+        if( self.OnChange ) then self:OnChange() end
     end
     self.textEntry.OnEnter = function()
-        if( self.OnEnter ) then
-            self.OnEnter()
-        end
+        if( self.OnEnter ) then self:OnEnter() end
+    end
+    self.textEntry.OnLoseFocus = function()
+        if( self.OnLoseFocus ) then self:OnLoseFocus() end
     end
 end
 

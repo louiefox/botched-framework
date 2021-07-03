@@ -29,16 +29,13 @@ function ENT:SetMenuInfo( menuType, npcKey )
 	end
 end
 
-util.AddNetworkString( "Botched.SendUseMenuNPC" )
 function ENT:Use( ply )
 	if( (ply.BOTCHED_NPC_COOLDOWN or 0) > CurTime() ) then return end
 	ply.BOTCHED_NPC_COOLDOWN = CurTime()+1
 
 	if( not BOTCHED.DEVCONFIG.MenuTypes[self:GetMenuType() or ""] ) then return end
 
-	net.Start( "Botched.SendUseMenuNPC" )
-		net.WriteEntity( self )
-	net.Send( ply )
+	BOTCHED.FUNC.SendOpenMenu( ply, self:GetMenuType() )
 end
 
 function ENT:OnTakeDamage( dmgInfo )

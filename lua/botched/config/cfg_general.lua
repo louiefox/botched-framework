@@ -29,8 +29,8 @@ MODULE:AddVariable( "Borders", "Theme Borders", "Themes used for borders on item
 MODULE:AddVariable( "Menus", "Menu Settings", "Configure the ways to access certain menus.", BOTCHED.TYPE.Table, {
     ["default"] = {
         Commands = {
-            "!default",
-            "/default"
+            ["!default"] = true,
+            ["/default"] = true
         },
         NPCs = {
             {
@@ -43,13 +43,13 @@ MODULE:AddVariable( "Menus", "Menu Settings", "Configure the ways to access cert
             }
         },
         Keys = {
-            KEY_F1
+            [KEY_F1] = true
         }
     },
     ["gacha"] = {
         Commands = {
-            "!gacha",
-            "/gacha"
+            ["!gacha"] = true,
+            ["/gacha"] = true
         },
         NPCs = {
             {
@@ -58,9 +58,9 @@ MODULE:AddVariable( "Menus", "Menu Settings", "Configure the ways to access cert
             }
         },
         Keys = {
-            KEY_F2
+            [KEY_F2] = true
         }
     }
-} )
+}, "botched_config_menus" )
 
 MODULE:Register()

@@ -16,6 +16,14 @@ function PANEL:Init()
 
 end
 
+function PANEL:SetBackColor( color )
+    self.backColor = color
+end
+
+function PANEL:SetHighlightColor( color )
+    self.highlightColor = color
+end
+
 function PANEL:Clear()
 
 	self.Choices = {}

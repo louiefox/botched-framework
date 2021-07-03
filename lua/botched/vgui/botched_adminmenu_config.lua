@@ -118,10 +118,20 @@ function PANEL:FillPanel()
                     vguiElement:Dock( FILL )
                     vguiElement:DockMargin( margin25, margin25, margin25, margin25 )
                     vguiElement:SetWide( self:GetWide()-self.navigation:GetWide()-(5*margin25)-(2*margin10) )
-                    if( vguiElement.Refresh ) then vguiElement:Refresh() end
+                    vguiElement.GetYShadowScissor = function()
+                        if( not self.FullyOpened ) then return 0, 0 end
+                        return self.startY+25, self.startY+self.actualH-25
+                    end
 
-                    variablePanel.fullHeight = headerH+50+vguiElement:GetTall()
-                    variablePanel:SetTall( variablePanel.fullHeight )
+                    vguiElement.oldRefresh = vguiElement.Refresh
+                    vguiElement.Refresh = function()
+                        if( vguiElement.oldRefresh ) then vguiElement:oldRefresh() end
+
+                        variablePanel.fullHeight = headerH+50+vguiElement:GetTall()
+                        variablePanel:SetTall( variablePanel.fullHeight )
+                    end
+
+                    vguiElement:Refresh()
                 elseif( val.Type == BOTCHED.TYPE.Int ) then
                     local targetH = BOTCHED.FUNC.ScreenScale( 40 )
                     local margin = (variablePanel:GetTall()-targetH)/2

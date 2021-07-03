@@ -22,19 +22,21 @@ function PANEL:Refresh()
     for k, v in ipairs( BOTCHED.CONFIGMETA.GENERAL:GetConfigDefaultValue( "Themes" ) ) do
         count = count+1
 
+        local margin10 = BOTCHED.FUNC.ScreenScale( 10 )
+        local headerH = BOTCHED.FUNC.ScreenScale( 30 )
+
         local themePanel = vgui.Create( "DPanel", self.grid )
         themePanel:SetSize( panelW, panelH )
         themePanel.Paint = function( self2, w, h )
-            draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, 100 ) )
+            draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, 50 ) )
+            draw.RoundedBoxEx( 8, 0, 0, w, headerH, BOTCHED.FUNC.GetTheme( 2, 100 ), true, true )
 
-            draw.SimpleText( "THEME " .. k, "MontserratBold22", 10, 10, BOTCHED.FUNC.GetTheme( 4, 100 ) )
+            draw.SimpleText( "THEME " .. k, "MontserratBold22", 10, headerH/2, BOTCHED.FUNC.GetTheme( 4, 100 ), 0, TEXT_ALIGN_CENTER )
         end
-
-        local margin = BOTCHED.FUNC.ScreenScale( 10 )
 
         local mixer = vgui.Create( "DColorMixer", themePanel )
         mixer:Dock( FILL )
-        mixer:DockMargin( margin, BOTCHED.FUNC.ScreenScale( 40 ), margin, margin )
+        mixer:DockMargin( margin10, headerH+margin10, margin10, margin10 )
         mixer:SetAlphaBar( true )
         mixer:SetWangs( true )
         mixer:SetPalette( false )

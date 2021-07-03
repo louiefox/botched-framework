@@ -26,6 +26,14 @@ function PANEL:Refresh()
         local borderPanel = vgui.Create( "DPanel", self.grid )
         borderPanel:SetSize( panelW, panelH )
         borderPanel.Paint = function( self2, w, h )
+            local startY, endY = self.GetYShadowScissor()
+
+            local uniqueID = "botched_config_border_" .. k
+            BSHADOWS.BeginShadow( uniqueID, 0, startY, ScrW(), endY )
+            local x, y = self2:LocalToScreen( 0, 0 )
+            draw.RoundedBox( 8, x, y, w, h, BOTCHED.FUNC.GetTheme( 2 ) )		
+            BSHADOWS.EndShadow( uniqueID, x, y, 1, 1, 2, 255, 0, 0, false )
+
             if( not v.Anim ) then
                 BOTCHED.FUNC.DrawRoundedMask( 8, 0, 0, w, h, function()
                     BOTCHED.FUNC.DrawGradientBox( 0, 0, w, h, 1, unpack( v.Colors ) )
@@ -49,8 +57,8 @@ function PANEL:Refresh()
             headerLabel:Dock( TOP )
             headerLabel:DockMargin( margin10, margin10, 0, 0 )
             headerLabel:SetText( text )
-            headerLabel:SetFont( "MontserratBold22" )
-            headerLabel:SetTextColor( BOTCHED.FUNC.GetTheme( 3 ) )
+            headerLabel:SetFont( "MontserratBold20" )
+            headerLabel:SetTextColor( BOTCHED.FUNC.GetTheme( 4, 100 ) )
             headerLabel:SizeToContentsY()
 
             totalH = totalH+margin10+headerLabel:GetTall()
@@ -102,7 +110,7 @@ function PANEL:Refresh()
                 if( IsValid( self2.popup ) ) then return end
 
                 self2.popup = vgui.Create( "botched_popup_choice" )
-                self2.popup:SetHeader( "BORDER EDITOR" )
+                self2.popup:SetHeader( "BORDER COLOUR EDITOR" )
                 self2.popup:AddOption( "Edit Colour", function() 
                     BOTCHED.FUNC.DermaColorRequest( "What should the new colour be?", "EDIT COLOUR", val, false, function( value )
                         values[k].Colors[key] = value
@@ -133,8 +141,8 @@ function PANEL:Refresh()
 
             surface.SetDrawColor( BOTCHED.FUNC.GetTheme( 4, 100+self2.alpha ) )
             surface.SetMaterial( addMat )
-            local iconSize = 16
-            surface.DrawTexturedRect( (w/2)-(iconSize/2)+1, (h/2)-(iconSize/2), iconSize, iconSize )
+            local iconSize = BOTCHED.FUNC.ScreenScale( 16 )
+            surface.DrawTexturedRect( (w/2)-(iconSize/2), (h/2)-(iconSize/2), iconSize, iconSize )
         end
         colourAdd.DoClick = function( self2 )
             table.insert( values[k].Colors, Color( 255, 255, 255 ) )
@@ -150,14 +158,51 @@ function PANEL:Refresh()
         local checkRow = vgui.Create( "DPanel", borderInfo )
         checkRow:Dock( TOP )
         checkRow:DockMargin( margin10, margin5, margin10, 0 )
-        checkRow:SetTall( 20 )
+        checkRow:SetTall( BOTCHED.FUNC.ScreenScale( 30 ) )
         checkRow.Paint = function( self2, w, h ) end
 
         totalH = totalH+checkRow:GetTall()+margin5
 
-        local checkbox = vgui.Create( "DCheckBox", checkRow )
-        checkbox:Dock( LEFT )
-        checkbox:SetWide( 20 )
+        local checkBox = vgui.Create( "botched_checkbox", checkRow )
+        checkBox:Dock( LEFT )
+        checkBox:SetWide( checkRow:GetTall() )
+        checkBox:SetChecked( v.Anim )
+        checkBox.OnChange = function( self2, checked )
+            values[k].Anim = checked
+            BOTCHED.FUNC.RequestConfigChange( "GENERAL", "Borders", values )
+            self:Refresh()
+        end
+
+        local optionsButton = vgui.Create( "DButton", checkRow )
+        optionsButton:Dock( RIGHT )
+        optionsButton:SetWide( checkRow:GetTall() )
+        optionsButton:SetText( "" )
+        local optionsMat = Material( "botched/icons/options_24.png" )
+        optionsButton.Paint = function( self2, w, h )
+            self2:CreateFadeAlpha( 0.2, 155 )
+
+            draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, self2.alpha ) )
+            BOTCHED.FUNC.DrawClickCircle( self2, w, h, BOTCHED.FUNC.GetTheme( 2 ), 8 )
+
+            surface.SetDrawColor( BOTCHED.FUNC.GetTheme( 4, 100+self2.alpha ) )
+            surface.SetMaterial( optionsMat )
+            local iconSize = BOTCHED.FUNC.ScreenScale( 24 )
+            surface.DrawTexturedRect( (w/2)-(iconSize/2), (h/2)-(iconSize/2), iconSize, iconSize )
+        end
+        optionsButton.DoClick = function( self2 )
+            self2.popup = vgui.Create( "botched_popup_choice" )
+            self2.popup:SetHeader( "BORDER EDITOR" )
+            self2.popup:AddOption( "Duplicate", function() 
+                table.insert( values, v )
+                BOTCHED.FUNC.RequestConfigChange( "GENERAL", "Borders", values )
+                self:Refresh()
+            end )
+            self2.popup:AddOption( "Delete", function() 
+                table.remove( values, k )
+                BOTCHED.FUNC.RequestConfigChange( "GENERAL", "Borders", values )
+                self:Refresh()
+            end )
+        end
 
         borderPanel:SetTall( totalH+6+margin10 )
 
@@ -175,12 +220,51 @@ function PANEL:Refresh()
 
         currentRowMax = math.max( currentRowMax, borderPanel:GetTall() )
 
-        if( currentRowCount >= slotsWide or k == #values ) then
+        if( currentRowCount >= slotsWide ) then
             currentRowCount = 0
             totalGridH = totalGridH+currentRowMax+panelSpacing
             currentRowMax = 0
         end
     end
+
+    local iconSize = BOTCHED.FUNC.ScreenScale( 64 )
+    surface.SetFont( "MontserratBold40" )
+    local contentH = iconSize+select( 2, surface.GetTextSize( "ADD NEW" ) )-BOTCHED.FUNC.ScreenScale( 5 )
+
+    local addNewButton = vgui.Create( "DButton", self.grid )
+    addNewButton:SetSize( panelW, panelH )
+    addNewButton:SetText( "" )
+    local addMat = Material( "botched/icons/add_64.png" )
+    addNewButton.Paint = function( self2, w, h )
+        self2:CreateFadeAlpha( 0.2, 50 )
+
+        local startY, endY = self.GetYShadowScissor()
+
+        local uniqueID = "botched_config_border_add"
+        BSHADOWS.BeginShadow( uniqueID, 0, startY, ScrW(), endY )
+        local x, y = self2:LocalToScreen( 0, 0 )
+        draw.RoundedBox( 8, x, y, w, h, BOTCHED.FUNC.GetTheme( 2 ) )		
+        BSHADOWS.EndShadow( uniqueID, x, y, 1, 1, 2, 255, 0, 0, false )
+
+        draw.RoundedBox( 8, 3, 3, w-6, h-6, BOTCHED.FUNC.GetTheme( 1 ) )
+        draw.RoundedBox( 8, 3, 3, w-6, h-6, BOTCHED.FUNC.GetTheme( 2, self2.alpha ) )
+
+        BOTCHED.FUNC.DrawClickCircle( self2, w, h, BOTCHED.FUNC.GetTheme( 2 ), 8 )
+
+        local textColor = BOTCHED.FUNC.GetTheme( 4, 100+((self2.alpha/50)*155) )
+        surface.SetDrawColor( textColor )
+        surface.SetMaterial( addMat )
+        surface.DrawTexturedRect( (w/2)-(iconSize/2), (h/2)-(contentH/2), iconSize, iconSize )
+
+        draw.SimpleText( "ADD NEW", "MontserratBold40", w/2, (h/2)+(contentH/2)+BOTCHED.FUNC.ScreenScale( 5 ), textColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+    end
+    addNewButton.DoClick = function()
+        table.insert( values, { Name = "New Border", Colors = { Color( 255, 125, 125 ), Color( 125, 255, 125 ), Color( 125, 125, 255 ) } } )
+        BOTCHED.FUNC.RequestConfigChange( "GENERAL", "Borders", values )
+        self:Refresh()
+    end
+
+    totalGridH = totalGridH+math.max( currentRowMax, panelH )+panelSpacing
 
     self:SetTall( totalGridH )
 end
