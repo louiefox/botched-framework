@@ -29,9 +29,15 @@ net.Receive( "Botched.SendConfigUpdate", function()
 
     print( "[BOTCHED FRAMEWORK] Config Updated: " .. modules .. " Module(s), " .. variables .. " Variable(s)" )
     hook.Run( "Botched.Hooks.ConfigUpdated" )
+
+    if( BOTCHED.FUNC.HasAdminAccess( LocalPlayer() ) ) then 
+        RunConsoleCommand( "spawnmenu_reload" )
+    end
 end )
 
 function BOTCHED.FUNC.RequestConfigChange( module, variable, value )
+    if( not BOTCHED.FUNC.HasAdminAccess( LocalPlayer() ) ) then return end
+
     if( not BOTCHED.TEMP.ChangedConfig ) then
         BOTCHED.TEMP.ChangedConfig = {}
     end

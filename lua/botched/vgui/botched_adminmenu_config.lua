@@ -102,14 +102,22 @@ function PANEL:FillPanel()
                             end
                         end
                     end
-                    button.DoClick = function( self2 )
-                        if( variablePanel:GetTall() > headerH ) then
-                            variablePanel:SizeTo( variablePanel.actualW, headerH, 0.2 )
-                            self2:DoRotationAnim( false )
-                        else
+                    button.SetExpanded = function( self2, expanded )
+                        if( expanded ) then
                             variablePanel:SizeTo( variablePanel.actualW, variablePanel.fullHeight, 0.2 )
                             self2:DoRotationAnim( true )
+                        else
+                            variablePanel:SizeTo( variablePanel.actualW, headerH, 0.2 )
+                            self2:DoRotationAnim( false )
                         end
+
+                        local newValue = expanded and 1 or 0
+                        if( cookie.GetNumber( "botched.configexpanded." .. val.Key, 1 ) != newValue ) then
+                            cookie.Set( "botched.configexpanded." .. val.Key, newValue )
+                        end
+                    end
+                    button.DoClick = function( self2 )
+                        self2:SetExpanded( variablePanel:GetTall() <= headerH )
                     end
 
                     variablePanel.button = button
@@ -128,7 +136,7 @@ function PANEL:FillPanel()
                         if( vguiElement.oldRefresh ) then vguiElement:oldRefresh() end
 
                         variablePanel.fullHeight = headerH+50+vguiElement:GetTall()
-                        variablePanel:SetTall( variablePanel.fullHeight )
+                        variablePanel:SetTall( cookie.GetNumber( "botched.configexpanded." .. val.Key, 1 ) == 1 and variablePanel.fullHeight or headerH )
                     end
 
                     vguiElement:Refresh()

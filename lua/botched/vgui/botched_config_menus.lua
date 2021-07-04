@@ -15,10 +15,12 @@ function PANEL:Refresh()
     local commandsIcon = Material( "botched/icons/command_32.png" )
     local npcsIcon = Material( "botched/icons/npc_32.png" )
     local keyIcon = Material( "botched/icons/hotkey_32.png" )
+    local optionsMat = Material( "botched/icons/options_24.png" )
 
     local menuTotalH = -panelSpacing
     for k, v in pairs( BOTCHED.DEVCONFIG.MenuTypes ) do
         local title = string.upper( v.Title )
+        local menuValues = values[k] or {}
 
         local margin10 = BOTCHED.FUNC.ScreenScale( 10 )
         local headerH = BOTCHED.FUNC.ScreenScale( 30 )
@@ -37,7 +39,7 @@ function PANEL:Refresh()
         local infoW = BOTCHED.FUNC.ScreenScale( 60 )
 
         local typePanelH = -margin10
-        local function CreateOpenTypePanel( icon, height )
+        local function CreateOpenTypePanel( icon, height, field, key )
             typePanelH = typePanelH+height+margin10
 
             local panel = vgui.Create( "DPanel", menuPanel )
@@ -54,13 +56,38 @@ function PANEL:Refresh()
                 surface.DrawTexturedRect( (infoW/2)-(iconSize/2), (h/2)-(iconSize/2), iconSize, iconSize )
             end
 
+            local optionsButton = vgui.Create( "DButton", panel )
+            optionsButton:SetWide( BOTCHED.FUNC.ScreenScale( 30 ) )
+            optionsButton:Dock( RIGHT )
+            local topMargin = (height-optionsButton:GetWide())/2
+            optionsButton:DockMargin( 0, topMargin, (BOTCHED.FUNC.ScreenScale( 60 )-optionsButton:GetWide())/2, topMargin )
+            optionsButton:SetText( "" )
+            optionsButton.Paint = function( self2, w, h )
+                self2:CreateFadeAlpha( 0.2, 155 )
+    
+                draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, self2.alpha ) )
+                BOTCHED.FUNC.DrawClickCircle( self2, w, h, BOTCHED.FUNC.GetTheme( 2 ), 8 )
+    
+                surface.SetDrawColor( BOTCHED.FUNC.GetTheme( 4, 100+self2.alpha ) )
+                surface.SetMaterial( optionsMat )
+                local iconSize = BOTCHED.FUNC.ScreenScale( 24 )
+                surface.DrawTexturedRect( (w/2)-(iconSize/2), (h/2)-(iconSize/2), iconSize, iconSize )
+            end
+            optionsButton.DoClick = function( self2 )
+                self2.popup = vgui.Create( "botched_popup_choice" )
+                self2.popup:SetHeader( "MENU EDITOR" )
+                self2.popup:AddOption( "Delete", function() 
+                    menuValues[field][key] = nil
+                    BOTCHED.FUNC.RequestConfigChange( "GENERAL", "Menus", values )
+                    self:Refresh()
+                end )
+            end
+
             return panel
         end
 
-        local menuValues = values[k] or {}
-
         for key, val in pairs( menuValues.Commands or {} ) do
-            local panel = CreateOpenTypePanel( commandsIcon, BOTCHED.FUNC.ScreenScale( 60 ) )
+            local panel = CreateOpenTypePanel( commandsIcon, BOTCHED.FUNC.ScreenScale( 60 ), "Commands", key )
 
             local textEntry = vgui.Create( "botched_textentry", panel )
             textEntry:Dock( LEFT )
@@ -82,7 +109,7 @@ function PANEL:Refresh()
 
         for key, val in pairs( menuValues.NPCs or {} ) do
             local entryH = BOTCHED.FUNC.ScreenScale( 40 )
-            local panel = CreateOpenTypePanel( npcsIcon, (3*margin10)+(2*entryH) )
+            local panel = CreateOpenTypePanel( npcsIcon, (3*margin10)+(2*entryH), "NPCs", key )
 
             local entriesBack = vgui.Create( "DPanel", panel )
             entriesBack:Dock( LEFT )
@@ -125,7 +152,7 @@ function PANEL:Refresh()
         end
 
         for key, val in pairs( menuValues.Keys or {} ) do
-            local panel = CreateOpenTypePanel( keyIcon, BOTCHED.FUNC.ScreenScale( 60 ) )
+            local panel = CreateOpenTypePanel( keyIcon, BOTCHED.FUNC.ScreenScale( 60 ), "Keys", key )
 
             local comboEntry = vgui.Create( "botched_combosearch", panel )
             comboEntry:Dock( LEFT )
@@ -150,7 +177,73 @@ function PANEL:Refresh()
             comboEntry:SetValue( BOTCHED.DEVCONFIG.KeyBinds[key] )
         end
 
-        menuPanel:SetTall( BOTCHED.FUNC.ScreenScale( 40 )+typePanelH+panelSpacing  )
+        local buttonPanel = vgui.Create( "DPanel", menuPanel )
+        buttonPanel:Dock( TOP )
+        buttonPanel:DockMargin( margin10, 0, margin10, margin10 )
+        buttonPanel:SetTall( BOTCHED.FUNC.ScreenScale( 40 ) )
+        buttonPanel.Paint = function( self2, w, h ) end
+        buttonPanel.AddButton = function( self2, text, iconMat, doClick )
+            local iconSize = BOTCHED.FUNC.ScreenScale( 24 )
+            surface.SetFont( "MontserratBold20" )
+
+            local button = vgui.Create( "DButton", self2 )
+            button:Dock( LEFT )
+            button:DockMargin( 0, 0, margin10, 0 )
+            button:SetWide( self2:GetTall()+surface.GetTextSize( text )+20 )
+            button:SetText( "" )
+            button.Paint = function( self2, w, h )
+                self2:CreateFadeAlpha( 0.2, 50 )
+
+                draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, 100 ) )
+                draw.RoundedBoxEx( 8, 0, 0, h, h, BOTCHED.FUNC.GetTheme( 1 ), true, false, true, false )
+
+                draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 1, self2.alpha ) )
+
+                BOTCHED.FUNC.DrawClickCircle( self2, w, h, BOTCHED.FUNC.GetTheme( 2, 100 ), 8 )
+    
+                local textColor = BOTCHED.FUNC.GetTheme( 4, 100+(self2.alpha/50)*155 )
+
+                surface.SetDrawColor( textColor )
+                surface.SetMaterial( iconMat )
+                surface.DrawTexturedRect( (h/2)-(iconSize/2), (h/2)-(iconSize/2), iconSize, iconSize )
+
+                draw.SimpleText( text, "MontserratBold20", h+((w-h)/2), h/2, textColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+            end
+            button.DoClick = doClick
+        end
+
+        buttonPanel:AddButton( "Add Chat Command", Material( "botched/icons/command_24.png" ), function()
+            BOTCHED.FUNC.DermaStringRequest( "What should the new command be?", "MENU EDITOR", "/newcmd", false, function( value )
+                if( menuValues.Commands[value] ) then return end
+                menuValues.Commands[value] = true
+                BOTCHED.FUNC.RequestConfigChange( "GENERAL", "Menus", values )
+                self:Refresh()
+            end )
+        end )
+        buttonPanel:AddButton( "Add NPC", Material( "botched/icons/npc_24.png" ), function()
+            table.insert( menuValues.NPCs, {
+                Name = "New NPC",
+                Model = "models/breen.mdl"
+            } )
+            BOTCHED.FUNC.RequestConfigChange( "GENERAL", "Menus", values )
+            self:Refresh()
+        end )
+        buttonPanel:AddButton( "Add Hotkey", Material( "botched/icons/hotkey_24.png" ), function()
+            local options = {}
+            for k, v in ipairs( BOTCHED.DEVCONFIG.KeyBinds ) do
+                if( menuValues.Keys[k] ) then continue end
+                options[k] = v
+            end
+
+            BOTCHED.FUNC.DermaComboRequest( "What should the hotkey be?", "MENU EDITOR", options, false, true, false, function( value, data )
+                if( not BOTCHED.DEVCONFIG.KeyBinds[data] ) then return end
+                menuValues.Keys[data] = true
+                BOTCHED.FUNC.RequestConfigChange( "GENERAL", "Menus", values )
+                self:Refresh()
+            end )
+        end )
+
+        menuPanel:SetTall( BOTCHED.FUNC.ScreenScale( 40 )+typePanelH+panelSpacing+buttonPanel:GetTall()+panelSpacing  )
         menuTotalH = menuTotalH+menuPanel:GetTall()+panelSpacing
     end
 
