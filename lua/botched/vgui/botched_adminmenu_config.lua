@@ -72,17 +72,19 @@ function PANEL:FillPanel()
 
                         surface.SetDrawColor( BOTCHED.FUNC.GetTheme( 4, 100 ) )
                         surface.SetMaterial( arrowMat )
-                        local iconSize = 24
+                        local iconSize = BOTCHED.FUNC.ScreenScale( 24 )
                         surface.DrawTexturedRectRotated( w-((headerH-iconSize)/2)-(iconSize/2), headerH/2, iconSize, iconSize, math.Clamp( (self2.button.textureRotation or 0), -90, 0 ) )
                     else
                         draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, 100 ) )
                     end
 
-                    draw.SimpleText( val.Name, "MontserratBold22", 25, headerH/2+1, BOTCHED.FUNC.GetTheme( 3 ), 0, TEXT_ALIGN_BOTTOM )
-                    draw.SimpleText( val.Description, "MontserratMedium21", 25, headerH/2-1, BOTCHED.FUNC.GetTheme( 4, 100 ) )
+                    draw.SimpleText( val.Name, "MontserratBold22", margin25, headerH/2+1, BOTCHED.FUNC.GetTheme( 3 ), 0, TEXT_ALIGN_BOTTOM )
+                    draw.SimpleText( val.Description, "MontserratMedium21", margin25, headerH/2-1, BOTCHED.FUNC.GetTheme( 4, 100 ) )
                 end
 
                 if( customElement ) then
+                    local vguiElement
+
                     local button = vgui.Create( "DButton", variablePanel )
                     button:Dock( TOP )
                     button:SetTall( headerH )
@@ -102,7 +104,7 @@ function PANEL:FillPanel()
                             end
                         end
                     end
-                    button.SetExpanded = function( self2, expanded )
+                    button.SetExpanded = function( self2, expanded, noAnim )
                         if( expanded ) then
                             variablePanel:SizeTo( variablePanel.actualW, variablePanel.fullHeight, 0.2 )
                             self2:DoRotationAnim( true )
@@ -115,6 +117,19 @@ function PANEL:FillPanel()
                         if( cookie.GetNumber( "botched.configexpanded." .. val.Key, 1 ) != newValue ) then
                             cookie.Set( "botched.configexpanded." .. val.Key, newValue )
                         end
+
+                        if( vguiElement.SetYShadowScissor ) then
+                            local startY, endY = vguiElement.GetYShadowScissor()
+                            
+                            if( expanded ) then
+                                timer.Simple( 0.2, function() 
+                                    if( not IsValid( vguiElement ) ) then return end
+                                    vguiElement:SetYShadowScissor( startY, endY ) 
+                                end )
+                            else
+                                vguiElement:SetYShadowScissor( startY, startY ) 
+                            end
+                        end
                     end
                     button.DoClick = function( self2 )
                         self2:SetExpanded( variablePanel:GetTall() <= headerH )
@@ -122,7 +137,7 @@ function PANEL:FillPanel()
 
                     variablePanel.button = button
 
-                    local vguiElement = vgui.Create( val.VguiElement, variablePanel )
+                    vguiElement = vgui.Create( val.VguiElement, variablePanel )
                     vguiElement:Dock( FILL )
                     vguiElement:DockMargin( margin25, margin25, margin25, margin25 )
                     vguiElement:SetWide( self:GetWide()-self.navigation:GetWide()-(5*margin25)-(2*margin10) )

@@ -45,6 +45,6 @@ MODULE:AddVariable( "Items", "Locker Items", "Add/edit items for the locker syst
         Type = "playermodel",
         TypeInfo = { "models/player/Astolfo.mdl" }
     }
-} )
+}, "botched_config_lockeritems" )
 
 MODULE:Register()

@@ -7,7 +7,7 @@ end
 function PANEL:SetItemInfo( itemKey, amount, doClick, uniqueID )
     self:Clear()
 
-    local configItem = BOTCHED.CONFIG.LOCKER.Items[itemKey]
+    local configItem = istable( itemKey ) and itemKey or BOTCHED.CONFIG.LOCKER.Items[itemKey]
     if( not configItem ) then return end
 
     local itemTypeConfig = BOTCHED.DEVCONFIG.ItemTypes[configItem.Type]

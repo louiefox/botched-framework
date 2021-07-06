@@ -36,7 +36,7 @@ function PANEL:FillPanel()
 
     local gridWide = self:GetWide()-self.rightPanel:GetWide()-70
     local slotsWide = math.floor( gridWide/BOTCHED.FUNC.ScreenScale( 150 ) )
-    local spacing = 10
+    local spacing = BOTCHED.FUNC.ScreenScale( 10 )
     self.slotSize = (gridWide-((slotsWide-1)*spacing))/slotsWide
 
     self.grid = vgui.Create( "DIconLayout", self.scrollPanel )
