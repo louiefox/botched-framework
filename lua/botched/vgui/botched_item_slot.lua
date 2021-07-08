@@ -15,9 +15,13 @@ function PANEL:SetItemInfo( itemKey, amount, doClick, uniqueID )
 
     self.uniqueID = uniqueID or configItem.Name
 
+    self.iconMat = nil
+    
     local model = configItem.Model
-    if( string.EndsWith( model, ".png" ) or string.EndsWith( model, ".jpg" ) ) then
-        self.iconMat = Material( model )
+    if( not string.EndsWith( model, ".mdl" ) ) then
+        BOTCHED.FUNC.GetImage( model, function( mat )
+            self.iconMat = mat
+        end )
     end
 
     self.hoverDraw = vgui.Create( "DPanel", self )
@@ -48,6 +52,9 @@ function PANEL:SetItemInfo( itemKey, amount, doClick, uniqueID )
             
             self.model:SetModel( model )
             self.model.LayoutEntity = function() end
+            self.model.PreDrawModel = function()
+                render.ClearDepth()
+            end
     
             if( IsValid( self.model.Entity ) ) then
                 if( not itemTypeConfig.ModelDisplay ) then

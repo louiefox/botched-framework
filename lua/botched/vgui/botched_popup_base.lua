@@ -69,6 +69,8 @@ function PANEL:Init()
 end
 
 function PANEL:Close()
+    self.FullyOpened = false
+
     if( self.OnClose ) then
         self:OnClose()
     end
@@ -98,7 +100,9 @@ end
 
 function PANEL:SetExtraHeight( extraH )
     self.mainPanel.targetH = self.header:GetTall()+extraH
-    self.mainPanel:SizeTo( self.mainPanel:GetWide(), self.mainPanel.targetH, 0.2 )
+    self.mainPanel:SizeTo( self.mainPanel:GetWide(), self.mainPanel.targetH, 0.2, 0, -1, function()
+        self.FullyOpened = true
+    end )
 end
 
 function PANEL:OnChildAdded( panel )

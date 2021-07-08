@@ -1,9 +1,9 @@
 local ITEM = BOTCHED.FUNC.CreateItemType( "playermodel" )
 
 ITEM:SetTitle( "Player Model" )
-ITEM:SetDescription( "Gives the player a permanent player model that they can equip from their locker." )
+ITEM:SetDescription( "A permanent model that the player can equip." )
 
-ITEM:AddReqInfo( "string", "Model Path", "The path for the player model to set the player to." )
+ITEM:AddReqInfo( BOTCHED.TYPE.String, "Model Path", "The path for the player model to set the player to." )
 ITEM:SetPermanent( true )
 ITEM:SetUseFunction( function( ply ) 
     print( "HERE" )
