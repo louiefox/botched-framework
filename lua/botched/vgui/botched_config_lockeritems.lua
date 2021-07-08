@@ -5,6 +5,8 @@ function PANEL:Init()
 end
 
 function PANEL:Refresh()
+    self:Clear()
+
     local panelH, panelSpacing = BOTCHED.FUNC.ScreenScale( 150 ), BOTCHED.FUNC.ScreenScale( 10 )
 
     local gridWide = self:GetWide()
@@ -20,16 +22,82 @@ function PANEL:Refresh()
     local startY, endY = self.GetYShadowScissor()
 
     local items = BOTCHED.FUNC.GetChangedVariable( "LOCKER", "Items" ) or BOTCHED.CONFIGMETA.LOCKER:GetConfigValue( "Items" )
+    
+    local sortedItems = {}
     for k, v in pairs( items ) do
+        local item = table.Copy( v )
+        item.Key = k
+
+        table.insert( sortedItems, item )
+    end
+
+    table.SortByMember( sortedItems, "Stars" )
+
+    for k, v in pairs( sortedItems ) do
         local itemPanel = self.grid:Add( "botched_item_slot" )
         itemPanel:SetSize( slotSize, slotSize*1.2 )
         itemPanel:SetItemInfo( v, false, function()
-            self:CreateItemPopup( k, items )
+            self:CreateItemPopup( v.Key, items )
         end )
         itemPanel:SetShadowScissor( 0, startY, ScrW(), endY )
     end
 
-    self:SetTall( (math.ceil( table.Count( items )/slotsWide )*((slotSize*1.2)+panelSpacing))-panelSpacing )
+    local iconSize = BOTCHED.FUNC.ScreenScale( 64 )
+    surface.SetFont( "MontserratBold30" )
+    local contentH = iconSize+select( 2, surface.GetTextSize( "ADD NEW" ) )-BOTCHED.FUNC.ScreenScale( 5 )
+
+    local addNewButton = vgui.Create( "DButton", self.grid )
+    addNewButton:SetSize( slotSize, slotSize*1.2 )
+    addNewButton:SetText( "" )
+    local addMat = Material( "botched/icons/add_64.png" )
+    addNewButton.Paint = function( self2, w, h )
+        self2:CreateFadeAlpha( 0.2, 50 )
+
+        local uniqueID = "botched_config_item_add"
+        BSHADOWS.BeginShadow( uniqueID, 0, self2.startY, ScrW(), self2.endY )
+        local x, y = self2:LocalToScreen( 0, 0 )
+        draw.RoundedBox( 8, x, y, w, h, BOTCHED.FUNC.GetTheme( 2 ) )		
+        BSHADOWS.EndShadow( uniqueID, x, y, 1, 1, 2, 255, 0, 0, false )
+
+        draw.RoundedBox( 8, 3, 3, w-6, h-6, BOTCHED.FUNC.GetTheme( 1 ) )
+        draw.RoundedBox( 8, 3, 3, w-6, h-6, BOTCHED.FUNC.GetTheme( 2, self2.alpha ) )
+
+        BOTCHED.FUNC.DrawClickCircle( self2, w, h, BOTCHED.FUNC.GetTheme( 2 ), 8 )
+
+        local textColor = BOTCHED.FUNC.GetTheme( 4, 100+((self2.alpha/50)*155) )
+        surface.SetDrawColor( textColor )
+        surface.SetMaterial( addMat )
+        surface.DrawTexturedRect( (w/2)-(iconSize/2), (h/2)-(contentH/2), iconSize, iconSize )
+
+        draw.SimpleText( "ADD NEW", "MontserratBold30", w/2, (h/2)+(contentH/2)+BOTCHED.FUNC.ScreenScale( 5 ), textColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
+    end
+    addNewButton.SetShadowScissor = function( self2, startX, startY, endX, endY )
+        self2.startY = startY
+        self2.endY = endY
+    end
+    addNewButton:SetShadowScissor( 0, startY, ScrW(), endY )
+    addNewButton.DoClick = function()
+        BOTCHED.FUNC.DermaStringRequest( "Enter a unique item ID, no spaces, no capitals.", "ITEM CREATION", "uniqueid", false, function( value )
+            if( items[value] ) then 
+                notification.AddLegacy( "An item already exists with this ID.", 1, 5 )
+                return
+            end
+
+            items[value] = {
+                Name = "New Item",
+                Model = "models/player/skeleton.mdl",
+                Stars = 1,
+                Border = 1,
+                Type = "playermodel",
+                TypeInfo = { "models/player/skeleton.mdl" }
+            }
+    
+            BOTCHED.FUNC.RequestConfigChange( "LOCKER", "Items", items )
+            self:Refresh()
+        end )
+    end
+
+    self:SetTall( (math.ceil( (table.Count( items )+1)/slotsWide )*((slotSize*1.2)+panelSpacing))-panelSpacing )
 end
 
 function PANEL:CreateItemPopup( itemKey, items )
@@ -46,7 +114,7 @@ function PANEL:CreateItemPopup( itemKey, items )
     end
 
     self.popup = vgui.Create( "botched_popup_base" )
-    self.popup:SetPopupWide( ScrW()*0.35 )
+    self.popup:SetPopupWide( ScrW()*0.4 )
     self.popup:SetExtraHeight( ScrH()*0.4 )
     self.popup:SetHeader( "ITEM CONFIG" )
     self.popup.OnClose = function()
@@ -56,17 +124,101 @@ function PANEL:CreateItemPopup( itemKey, items )
     end
 
     local sectionMargin = BOTCHED.FUNC.ScreenScale( 25 )
-    local sectionWide = (self.popup:GetPopupWide()-(2*sectionMargin))/2
+    local sectionWide = (self.popup:GetPopupWide()-(3*sectionMargin))/2
+    local margin10 = BOTCHED.FUNC.ScreenScale( 10 )
+
+    local itemInfoBack = vgui.Create( "DPanel", self.popup )
+    itemInfoBack:SetSize( sectionWide, BOTCHED.FUNC.ScreenScale( 110 ) )
+    itemInfoBack:SetPos( sectionMargin, self.popup.mainPanel.targetH-sectionMargin-itemInfoBack:GetTall() )
+    itemInfoBack.Paint = function( self2, w, h )
+        draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, 50 ) )
+    end
+
+    local itemInfo = vgui.Create( "DPanel", itemInfoBack )
+    itemInfo:Dock( TOP )
+    itemInfo:SetTall( BOTCHED.FUNC.ScreenScale( 50 ) )
+    itemInfo.Paint = function( self2, w, h )
+        draw.RoundedBoxEx( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, 100 ), true, true, false, false )
+
+        surface.SetDrawColor( BOTCHED.FUNC.GetTheme( 4, 100 ) )
+        surface.SetMaterial( Material( "botched/icons/data.png" ) )
+        local iconSize = BOTCHED.FUNC.ScreenScale( 24 )
+        surface.DrawTexturedRect( (h/2)-(iconSize/2), (h/2)-(iconSize/2), iconSize, iconSize )
+
+        draw.SimpleText( "Item Info", "MontserratBold22", h, h/2+1, BOTCHED.FUNC.GetTheme( 3 ), 0, TEXT_ALIGN_BOTTOM )
+        draw.SimpleText( "Basic information and actions.", "MontserratMedium20", h, h/2-1, BOTCHED.FUNC.GetTheme( 4, 100 ) )
+    end
+
+    local itemInfoBottom = vgui.Create( "DPanel", itemInfoBack )
+    itemInfoBottom:Dock( FILL )
+    itemInfoBottom:SetTall( itemInfoBack:GetTall()-itemInfo:GetTall() )
+    itemInfoBottom.Paint = function( self2, w, h ) end
+    itemInfoBottom.AddButton = function( self2, text, iconMat, doClick )
+        local iconSize = BOTCHED.FUNC.ScreenScale( 24 )
+        surface.SetFont( "MontserratBold20" )
+
+        local button = vgui.Create( "DButton", self2 )
+        button:Dock( RIGHT )
+        button:DockMargin( 0, margin10, margin10, margin10 )
+        button:SetWide( self2:GetTall()-(2*margin10)+surface.GetTextSize( text )+20 )
+        button:SetText( "" )
+        button.Paint = function( self2, w, h )
+            self2:CreateFadeAlpha( 0.2, 50 )
+
+            draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, 100 ) )
+            draw.RoundedBoxEx( 8, 0, 0, h, h, BOTCHED.FUNC.GetTheme( 1 ), true, false, true, false )
+
+            draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 1, self2.alpha ) )
+
+            BOTCHED.FUNC.DrawClickCircle( self2, w, h, BOTCHED.FUNC.GetTheme( 2, 100 ), 8 )
+
+            local textColor = BOTCHED.FUNC.GetTheme( 4, 100+(self2.alpha/50)*155 )
+
+            surface.SetDrawColor( textColor )
+            surface.SetMaterial( iconMat )
+            surface.DrawTexturedRect( (h/2)-(iconSize/2), (h/2)-(iconSize/2), iconSize, iconSize )
+
+            draw.SimpleText( text, "MontserratBold20", h+((w-h)/2), h/2, textColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+        end
+        button.DoClick = doClick
+    end
+
+    itemInfoBottom:AddButton( "Delete", Material( "botched/icons/delete_24.png" ), function()
+        BOTCHED.FUNC.DermaQuery( "Are you sure you want to delete this item?", "ITEM DELETION", "Confirm", function()
+            items[itemKey] = nil
+            valueChanged = true
+            self.popup:Close()
+        end, "Cancel" )
+    end )
+
+    local itemIDLeftPadding = BOTCHED.FUNC.ScreenScale( 40 )
+
+    local itemIDBack = vgui.Create( "DPanel", itemInfoBottom )
+    itemIDBack:Dock( LEFT )
+    itemIDBack:DockMargin( margin10, margin10, 0, margin10 )
+    itemIDBack:DockPadding( itemIDLeftPadding, 0, 0, 0 )
+    itemIDBack:SetWide( BOTCHED.FUNC.ScreenScale( 200 ) )
+    itemIDBack.Paint = function( self2, w, h ) 
+        draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 1, 175 ) )
+
+        draw.SimpleText( "ID:", "MontserratBold20", itemIDLeftPadding/2, h/2-1, BOTCHED.FUNC.GetTheme( 3 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+    end
+
+    local itemIDEntry = vgui.Create( "botched_textentry", itemIDBack )
+    itemIDEntry:Dock( FILL )
+    itemIDEntry:SetBackColor( BOTCHED.FUNC.GetTheme( 1 ) )
+    itemIDEntry:SetHighlightColor( BOTCHED.FUNC.GetTheme( 1 ) )
+    itemIDEntry:SetRoundedCorners( false, true, false, true )
+    itemIDEntry:SetValue( itemKey )
+    itemIDEntry:SetEnabled( false )
 
     local itemPanelWide = BOTCHED.FUNC.ScreenScale( 200 )
-
     itemPanel = vgui.Create( "botched_item_slot", self.popup )
     itemPanel:SetSize( itemPanelWide, itemPanelWide*1.2 )
-    itemPanel:SetPos( sectionMargin/2+(sectionWide/2)-(itemPanelWide/2), self.popup.header:GetTall()+(self.popup.mainPanel.targetH-self.popup.header:GetTall())/2-itemPanel:GetTall()/2 )
+    itemPanel:SetPos( sectionMargin+(sectionWide/2)-(itemPanelWide/2), self.popup.header:GetTall()+(self.popup.mainPanel.targetH-self.popup.header:GetTall()-itemInfoBack:GetTall())/2-itemPanel:GetTall()/2 )
     itemPanel:SetItemInfo( configItem )
 
     local margin5 = BOTCHED.FUNC.ScreenScale( 5 )
-    local margin10 = BOTCHED.FUNC.ScreenScale( 10 )
     local margin25 = BOTCHED.FUNC.ScreenScale( 25 )
     local iconSize = BOTCHED.FUNC.ScreenScale( 24 )
     local headerH = BOTCHED.FUNC.ScreenScale( 50 )
@@ -449,6 +601,7 @@ end
 
 function PANEL:SetYShadowScissor( startY, endY )
     for k, v in ipairs( self.grid:GetChildren() ) do
+        if( not v.SetShadowScissor ) then continue end
         v:SetShadowScissor( 0, startY, ScrW(), endY )
     end
 end

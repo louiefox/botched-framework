@@ -86,6 +86,10 @@ function PANEL:SetFont( font )
     self.textEntry:SetFont( font )
 end
 
+function PANEL:SetEnabled( enabled )
+    self.textEntry:SetEnabled( enabled )
+end
+
 function PANEL:Paint( w, h )
 	if( self.textEntry:IsEditing() ) then
 		self.alpha = math.Clamp( (self.alpha or 20)+10, 20, 255 )

@@ -21,7 +21,7 @@ MODULE:AddVariable( "Items", "Locker Items", "Add/edit items for the locker syst
         Type = "playermodel",
         TypeInfo = { "models/CyanBlue/DarlingFranxx/ZeroTwo/ZeroTwo.mdl" }
     },
-    ["mei_sakurajima_1"] = {
+    ["bunny_mei"] = {
         Name = "Bunny Mei",
         Model = "models/pacagma/seishun_buta_yarou_wa_bunny_girl_senpai_no_yume_wo_minai/mai_sakurajima_bunny/mai_sakurajima_bunny_player.mdl",
         Stars = 2,
