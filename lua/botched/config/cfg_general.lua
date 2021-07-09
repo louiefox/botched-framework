@@ -27,25 +27,6 @@ MODULE:AddVariable( "Borders", "Theme Borders", "Themes used for borders on item
 }, "botched_config_borders" )
 
 MODULE:AddVariable( "Menus", "Menu Settings", "Configure the ways to access certain menus.", BOTCHED.TYPE.Table, {
-    ["default"] = {
-        Commands = {
-            ["!default"] = true,
-            ["/default"] = true
-        },
-        NPCs = {
-            {
-                Name = "Default NPC",
-                Model = "models/breen.mdl"
-            },
-            {
-                Name = "Botched NPC",
-                Model = "models/breen.mdl"
-            }
-        },
-        Keys = {
-            [KEY_F1] = true
-        }
-    },
     ["gacha"] = {
         Commands = {
             ["!gacha"] = true,

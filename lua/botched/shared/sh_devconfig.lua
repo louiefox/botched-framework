@@ -28,13 +28,6 @@ BOTCHED.DEVCONFIG.EntityTypes["botched_menu_npc"] = {
     end
 }
 
--- MENUES SAVING --
-BOTCHED.DEVCONFIG.MenuTypes = BOTCHED.DEVCONFIG.MenuTypes or {}
-BOTCHED.DEVCONFIG.MenuTypes["default"] = {
-    Title = "Default",
-    Element = "DPanel"
-}
-
 -- KEY BINDS --
 BOTCHED.DEVCONFIG.KeyBinds = {
     "0",
