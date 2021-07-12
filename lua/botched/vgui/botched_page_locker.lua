@@ -12,11 +12,11 @@ function PANEL:FillPanel()
         if( self.FullyOpened ) then
             local x, y = self2:LocalToScreen( 0, 0 )
 
-            BSHADOWS.BeginShadow( "inventory_sidepanel", 0, y, ScrW(), y+h )
-            BSHADOWS.SetShadowSize( "inventory_sidepanel", w, h-4 )
+            BOTCHED.FUNC.BeginShadow( "inventory_sidepanel", 0, y, ScrW(), y+h )
+            BOTCHED.FUNC.SetShadowSize( "inventory_sidepanel", w, h-4 )
             surface.SetDrawColor( BOTCHED.FUNC.GetTheme( 1 ) )
             surface.DrawRect( x, y, w, h )
-            BSHADOWS.EndShadow( "inventory_sidepanel", x, y, 1, 2, 2, 255, 0, 0, true )
+            BOTCHED.FUNC.EndShadow( "inventory_sidepanel", x, y, 1, 2, 2, 255, 0, 0, true )
         end
 
         surface.SetDrawColor( BOTCHED.FUNC.GetTheme( 1 ) )

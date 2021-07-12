@@ -43,11 +43,11 @@ function PANEL:Refresh()
         local alpha = 0
         playerBack.Paint = function( self2, w, h )
             local uniqueID = "admin_ply_" .. v:Nick()
-            BSHADOWS.BeginShadow( uniqueID )
-            BSHADOWS.SetShadowSize( uniqueID, w, h )
+            BOTCHED.FUNC.BeginShadow( uniqueID )
+            BOTCHED.FUNC.SetShadowSize( uniqueID, w, h )
             local x, y = self2:LocalToScreen( 0, 0 )
             draw.RoundedBox( 8, x, y, w, h, BOTCHED.FUNC.GetTheme( 2 ) )		
-            BSHADOWS.EndShadow( uniqueID, x, y, 1, 1, 2, 255, 0, 0, false )
+            BOTCHED.FUNC.EndShadow( uniqueID, x, y, 1, 1, 2, 255, 0, 0, false )
 
             draw.RoundedBox( 8, borderSize, borderSize, w-(2*borderSize), h-(2*borderSize), BOTCHED.FUNC.GetTheme( 1 ) )
             

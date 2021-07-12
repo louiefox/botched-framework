@@ -52,11 +52,11 @@ function PANEL:Paint( w, h )
     if( not self.infoSet ) then return end
     local uniqueID = "itemslotbar_entry_" .. self.name .. "_" .. (self.neededAmount or 0)
 
-    BSHADOWS.BeginShadow( uniqueID )
-    BSHADOWS.SetShadowSize( uniqueID, w, h )
+    BOTCHED.FUNC.BeginShadow( uniqueID )
+    BOTCHED.FUNC.SetShadowSize( uniqueID, w, h )
     local x, y = self:LocalToScreen( 0, 0 )
     draw.RoundedBox( 8, x, y, w, h, self.borderColor or BOTCHED.FUNC.GetTheme( 2 ) )
-    BSHADOWS.EndShadow( uniqueID, x, y, 1, 1, 2, 255, 0, 0, false )
+    BOTCHED.FUNC.EndShadow( uniqueID, x, y, 1, 1, 2, 255, 0, 0, false )
 
     draw.RoundedBox( 8, self.borderSize, self.borderSize, w-(2*self.borderSize), h-(2*self.borderSize), BOTCHED.FUNC.GetTheme( 1 ) )	
 

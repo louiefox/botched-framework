@@ -212,9 +212,9 @@ function PANEL:AddPage( panel, icon, text )
         if( self.FullyOpened ) then
             local x, y = self2:LocalToScreen( 0, 0 )
 
-            BSHADOWS.BeginShadow( "adminmenu_config_" .. text )
+            BOTCHED.FUNC.BeginShadow( "adminmenu_config_" .. text )
             draw.RoundedBox( 8, x, y, w, h, BOTCHED.FUNC.GetTheme( 2 ) )
-            BSHADOWS.EndShadow( "adminmenu_config_" .. text, x, y, 1, 1, 1, 255, 0, 0, false )
+            BOTCHED.FUNC.EndShadow( "adminmenu_config_" .. text, x, y, 1, 1, 1, 255, 0, 0, false )
         end
 
         draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2 ) )
@@ -263,10 +263,10 @@ function PANEL:CreateSavePopout()
         if( self.FullyOpened ) then
             local x, y = self2:LocalToScreen( 0, 0 )
 
-            BSHADOWS.BeginShadow( "adminmenu_config_savepopout", 0, self.startY, ScrW(), self.startY+self.actualH )
-            BSHADOWS.SetShadowSize( "adminmenu_config_savepopout", w, h )
+            BOTCHED.FUNC.BeginShadow( "adminmenu_config_savepopout", 0, self.startY, ScrW(), self.startY+self.actualH )
+            BOTCHED.FUNC.SetShadowSize( "adminmenu_config_savepopout", w, h )
             draw.RoundedBox( 8, x, y, w, h, BOTCHED.FUNC.GetTheme( 2 ) )
-            BSHADOWS.EndShadow( "adminmenu_config_savepopout", x, y, 1, 1, 1, 255, 0, 0, false )
+            BOTCHED.FUNC.EndShadow( "adminmenu_config_savepopout", x, y, 1, 1, 1, 255, 0, 0, false )
         end
 
         local border = 2

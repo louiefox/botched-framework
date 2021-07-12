@@ -141,11 +141,11 @@ function PANEL:SetTargetSize( w, h )
 end
 
 function PANEL:Paint( w, h )
-    BSHADOWS.BeginShadow( "menu_" .. self.header )
-    BSHADOWS.SetShadowSize( "menu_" .. self.header, w, h )
+    BOTCHED.FUNC.BeginShadow( "menu_" .. self.header )
+    BOTCHED.FUNC.SetShadowSize( "menu_" .. self.header, w, h )
     local x, y = self:LocalToScreen( 0, 0 )
     draw.RoundedBox( 8, x, y, w, h, BOTCHED.FUNC.GetTheme( 1 ) )			
-    BSHADOWS.EndShadow( "menu_" .. self.header, x, y, 1, 2, 2, 255, 0, 0, false )
+    BOTCHED.FUNC.EndShadow( "menu_" .. self.header, x, y, 1, 2, 2, 255, 0, 0, false )
 end
 
 vgui.Register( "botched_frame", PANEL, "EditablePanel" )

@@ -210,11 +210,11 @@ function PANEL:Paint( w, h )
     if( not self.uniqueID ) then return end
 
     if( not self.disableShadows or (self.shadowDisable and self.shadowDisable() == true) ) then
-        BSHADOWS.BeginShadow( self.uniqueID, self.shadowStartX, self.shadowStartY, self.shadowEndX, self.shadowEndY )
-        BSHADOWS.SetShadowSize( self.uniqueID, w, h )
+        BOTCHED.FUNC.BeginShadow( self.uniqueID, self.shadowStartX, self.shadowStartY, self.shadowEndX, self.shadowEndY )
+        BOTCHED.FUNC.SetShadowSize( self.uniqueID, w, h )
         local x, y = self:LocalToScreen( 0, 0 )
         draw.RoundedBox( 8, x, y, w, h, BOTCHED.FUNC.GetTheme( 2 ) )		
-        BSHADOWS.EndShadow( self.uniqueID, x, y, 1, 1, 2, 255, 0, 0, false )
+        BOTCHED.FUNC.EndShadow( self.uniqueID, x, y, 1, 1, 2, 255, 0, 0, false )
     else
         draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2 ) )
     end

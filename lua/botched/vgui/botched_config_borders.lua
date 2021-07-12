@@ -29,10 +29,10 @@ function PANEL:Refresh()
             local startY, endY = self.GetYShadowScissor()
 
             local uniqueID = "botched_config_border_" .. k
-            BSHADOWS.BeginShadow( uniqueID, 0, startY, ScrW(), endY )
+            BOTCHED.FUNC.BeginShadow( uniqueID, 0, startY, ScrW(), endY )
             local x, y = self2:LocalToScreen( 0, 0 )
             draw.RoundedBox( 8, x, y, w, h, BOTCHED.FUNC.GetTheme( 2 ) )		
-            BSHADOWS.EndShadow( uniqueID, x, y, 1, 1, 2, 255, 0, 0, false )
+            BOTCHED.FUNC.EndShadow( uniqueID, x, y, 1, 1, 2, 255, 0, 0, false )
 
             if( not v.Anim ) then
                 BOTCHED.FUNC.DrawRoundedMask( 8, 0, 0, w, h, function()
@@ -241,10 +241,10 @@ function PANEL:Refresh()
         local startY, endY = self.GetYShadowScissor()
 
         local uniqueID = "botched_config_border_add"
-        BSHADOWS.BeginShadow( uniqueID, 0, startY, ScrW(), endY )
+        BOTCHED.FUNC.BeginShadow( uniqueID, 0, startY, ScrW(), endY )
         local x, y = self2:LocalToScreen( 0, 0 )
         draw.RoundedBox( 8, x, y, w, h, BOTCHED.FUNC.GetTheme( 2 ) )		
-        BSHADOWS.EndShadow( uniqueID, x, y, 1, 1, 2, 255, 0, 0, false )
+        BOTCHED.FUNC.EndShadow( uniqueID, x, y, 1, 1, 2, 255, 0, 0, false )
 
         draw.RoundedBox( 8, 3, 3, w-6, h-6, BOTCHED.FUNC.GetTheme( 1 ) )
         draw.RoundedBox( 8, 3, 3, w-6, h-6, BOTCHED.FUNC.GetTheme( 2, self2.alpha ) )
