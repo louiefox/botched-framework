@@ -104,10 +104,7 @@ function PANEL:SetItemInfo( itemKey, amount, doClick, uniqueID )
 
         if( amount ) then draw.SimpleText( "x" .. string.Comma( amount ), "MontserratMedium20", w-10, h-10, BOTCHED.FUNC.GetTheme( 4, 75 ), TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM ) end
 
-        if( self.topRightText ) then draw.SimpleText( self.topRightText, "MontserratMedium20", w-10, 5, BOTCHED.FUNC.GetTheme( 4, 75 ), TEXT_ALIGN_RIGHT ) end
-        if( self.topLeftText ) then draw.SimpleText( self.topLeftText, "MontserratMedium20", 10, 5, BOTCHED.FUNC.GetTheme( 4, 75 ) ) end
-
-        if( not stars or stars < 1 ) then return end
+        if( not stars or self.disableStars or stars < 1 ) then return end
 
         local iconSize, starSpacing = 16, 2
         surface.SetMaterial( starMat )
@@ -151,6 +148,10 @@ function PANEL:DisableShadows( bool )
     self.disableShadows = bool
 end
 
+function PANEL:DisableStars( bool )
+    self.disableStars = bool
+end
+
 function PANEL:SetTitleFont( titleFont )
     self.titleFont = titleFont
 end
@@ -182,14 +183,6 @@ function PANEL:SetBorder( border )
         self.borderAnim:SetCornerRadius( 8 )
 		self.borderAnim:StartAnim()
     end
-end
-
-function PANEL:AddTopRightText( text )
-    self.topRightText = text
-end
-
-function PANEL:AddTopLeftText( text )
-    self.topLeftText = text
 end
 
 function PANEL:SetShadowDisable( func )

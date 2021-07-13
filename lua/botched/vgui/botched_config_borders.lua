@@ -30,6 +30,7 @@ function PANEL:Refresh()
 
             local uniqueID = "botched_config_border_" .. k
             BOTCHED.FUNC.BeginShadow( uniqueID, 0, startY, ScrW(), endY )
+            BOTCHED.FUNC.SetShadowSize( uniqueID, w, h )
             local x, y = self2:LocalToScreen( 0, 0 )
             draw.RoundedBox( 8, x, y, w, h, BOTCHED.FUNC.GetTheme( 2 ) )		
             BOTCHED.FUNC.EndShadow( uniqueID, x, y, 1, 1, 2, 255, 0, 0, false )
@@ -74,10 +75,9 @@ function PANEL:Refresh()
         nameEntry:SetHighlightColor( BOTCHED.FUNC.GetTheme( 2, 50 ) )
         nameEntry:SetFont( "MontserratMedium20" )
         nameEntry:SetValue( v.Name )
-        nameEntry.OnChange = function()
+        nameEntry.OnLoseFocus = function()
             values[k].Name = nameEntry:GetValue()
             BOTCHED.FUNC.RequestConfigChange( "GENERAL", "Borders", values )
-            self:Refresh()
         end
 
         totalH = totalH+nameEntry:GetTall()+margin5

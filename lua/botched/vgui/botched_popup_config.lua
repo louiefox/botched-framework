@@ -23,9 +23,8 @@ function PANEL:FinishSetup()
     self.fieldsBack.AddField = function( self2, name, description, iconMat ) 
         local fieldPanel = vgui.Create( "DPanel", self2 )
         fieldPanel:Dock( TOP )
-        fieldPanel:SetTall( self.fieldHeaderH )
+        fieldPanel:SetSize( self.sectionWide-margin10-10, self.fieldHeaderH )
         fieldPanel:DockMargin( 0, 0, margin10, margin10 )
-        fieldPanel.actualW = self.sectionWide-margin10-10
         fieldPanel.Paint = function( self2, w, h )
             draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, 50 ) )
         end
@@ -33,10 +32,10 @@ function PANEL:FinishSetup()
             self2.expanded = expanded
 
             if( expanded ) then
-                self2:SizeTo( self2.actualW, self2.fullHeight, 0.2 )
+                self2:SizeTo( self2:GetWide(), self2.fullHeight, 0.2 )
                 self2.header:DoRotationAnim( true )
             else
-                self2:SizeTo( self2.actualW, self.fieldHeaderH, 0.2 )
+                self2:SizeTo( self2:GetWide(), self.fieldHeaderH, 0.2 )
                 self2.header:DoRotationAnim( false )
             end
         end

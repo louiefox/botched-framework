@@ -290,7 +290,7 @@ function PANEL:CreateItemPopup( itemKey, items )
 
         local button = vgui.Create( "DButton", modelTypeRow )
         button:Dock( LEFT )
-        button:SetWide( (modelField.actualW-(2*margin10))/2 )
+        button:SetWide( (modelField:GetWide()-(2*margin10))/2 )
         button:SetText( "" )
         local iconSize = BOTCHED.FUNC.ScreenScale( 24 )
         button.Paint = function( self3, w, h )
