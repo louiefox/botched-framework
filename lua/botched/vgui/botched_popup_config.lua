@@ -43,7 +43,11 @@ function PANEL:FinishSetup()
         fieldPanel.SetExtraHeight = function( self2, extraHeight )
             self2.fullHeight = self.fieldHeaderH+extraHeight
 
-            if( self2.expanded ) then return end
+            if( self2.expanded ) then 
+                self2:SetTall( self2.fullHeight )
+                return 
+            end
+
             self2:SetExpanded( true )
         end
         

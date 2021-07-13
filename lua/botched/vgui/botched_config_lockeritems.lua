@@ -79,7 +79,7 @@ function PANEL:Refresh()
     addNewButton.DoClick = function()
         BOTCHED.FUNC.DermaStringRequest( "Enter a unique item ID, no spaces, no capitals.", "ITEM CREATION", "uniqueid", false, function( value )
             if( items[value] ) then 
-                notification.AddLegacy( "An item already exists with this ID.", 1, 5 )
+                BOTCHED.FUNC.DermaMessage( "An item already exists with this ID.", "CREATION ERROR" )
                 return
             end
 
