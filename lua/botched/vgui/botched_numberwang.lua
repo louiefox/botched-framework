@@ -47,7 +47,11 @@ function PANEL:Init()
         if( self.OnEnter ) then self:OnEnter() end
     end
 	self.numberWang.OnLoseFocus = function( self2 )
-		timer.Simple( 0, function() self2:SetValue( math.Clamp( self2:GetValue(), self2:GetMin(), self2:GetMax() ) ) end )
+		timer.Simple( 0, function() 
+			if( not IsValid( self2 ) ) then return end
+			self2:SetValue( math.Clamp( self2:GetValue(), self2:GetMin(), self2:GetMax() ) ) 
+		end )
+
         if( self.OnLoseFocus ) then self:OnLoseFocus() end
     end
 end
