@@ -7,7 +7,9 @@ function PANEL:Init()
 
     local CenterStartX, CenterStartY, CursorStartX, CursorStartY
 
-    self.headerSize = 30
+    self.headerSize = BOTCHED.FUNC.ScreenScale( 30 )
+
+    local margin10 = BOTCHED.FUNC.ScreenScale( 10 )
 
     self.headerPanel = vgui.Create( "DButton", self )
 	self.headerPanel:Dock( TOP )
@@ -17,7 +19,7 @@ function PANEL:Init()
 	self.headerPanel.Paint = function( self2, w, h )
         draw.RoundedBoxEx( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, 100 ), true, true, false, false )
 
-        draw.SimpleText( self.header, "MontserratMedium21", 10, h/2-1, BOTCHED.FUNC.GetTheme( 4, 75 ), 0, TEXT_ALIGN_CENTER )
+        draw.SimpleText( self.header, "MontserratMedium21", margin10, h/2-1, BOTCHED.FUNC.GetTheme( 4, 75 ), 0, TEXT_ALIGN_CENTER )
 	end
     self.headerPanel.OnMousePressed = function( self2 )
         CenterStartX, CenterStartY = self.CenterX, self.CenterY
@@ -49,8 +51,10 @@ function PANEL:CreateCloseButton()
         return
     end
 
+    local iconSize = BOTCHED.FUNC.ScreenScale( 16 )
+
     self.closeButton = vgui.Create( "DButton", self )
-	self.closeButton:SetSize( 50, self.headerSize )
+	self.closeButton:SetSize( BOTCHED.FUNC.ScreenScale( 50 ), self.headerSize )
 	self.closeButton:SetPos( self:GetWide()-self.closeButton:GetWide(), 0 )
 	self.closeButton:SetText( "" )
     local closeMat = Material( "botched/icons/close_16.png" )
@@ -60,8 +64,6 @@ function PANEL:CreateCloseButton()
 
         draw.RoundedBoxEx( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, 100 ), false, true )
         draw.RoundedBoxEx( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 3, self2.alpha ), false, true )
-
-        local iconSize = 16
 
         surface.SetDrawColor( BOTCHED.FUNC.GetTheme( 4, 155+self2.alpha ) )
 		surface.SetMaterial( closeMat )
