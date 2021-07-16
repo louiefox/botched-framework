@@ -106,7 +106,7 @@ function PANEL:SetItemInfo( itemKey, amount, doClick, uniqueID )
 
         if( not stars or self.disableStars or stars < 1 ) then return end
 
-        local iconSize, starSpacing = 16, 2
+        local iconSize, starSpacing = BOTCHED.FUNC.ScreenScale( 16 ), 2
         surface.SetMaterial( starMat )
 
         local starTotalW = (stars*(iconSize+starSpacing))-starSpacing
@@ -119,10 +119,10 @@ function PANEL:SetItemInfo( itemKey, amount, doClick, uniqueID )
         for i = 1, stars do
             local starXPos, starYPos = ((w/2)-(starTotalW/2))+((i-1)*(iconSize+starSpacing)), h-(iconSize*0.65)
             surface.SetDrawColor( 0, 0, 0 )
-            surface.DrawTexturedRect( starXPos, starYPos, iconSize, iconSize )
+            surface.DrawTexturedRect( starXPos+1, starYPos+1, iconSize, iconSize )
 
             surface.SetDrawColor( 255, 255, 255 )
-            surface.DrawTexturedRect( starXPos-1, starYPos-1, iconSize, iconSize )
+            surface.DrawTexturedRect( starXPos, starYPos, iconSize, iconSize )
         end
         DisableClipping( false )
 

@@ -66,7 +66,7 @@ function BOTCHED.FUNC.EndShadow( uniqueID, x, y, intensity, spread, blur, opacit
     distance = distance or 0
     _shadowOnly = _shadowOnly or false
 
-    if( not shadowTable[1] or shadowTable[2] != x or shadowTable[3] != y or (shadowTable[8] and (shadowTable[10] or 0) != shadowTable[8]) or (shadowTable[9] and (shadowTable[11] or 0) != shadowTable[9]) or (shadowTable[12] or 1) != surface.GetAlphaMultiplier() ) then
+    if( not shadowTable[1] or (shadowTable[8] and (shadowTable[10] or 0) != shadowTable[8]) or (shadowTable[9] and (shadowTable[11] or 0) != shadowTable[9]) or (shadowTable[12] or 1) != surface.GetAlphaMultiplier() ) then
         local shadowRenderTarget = GetRenderTarget("botched_shadows_" .. ScrW() .. "_id_" .. uniqueID, ScrW(),  ScrW(), ScrH())
         -- Copy this render target to the other
         render.CopyRenderTargetToTexture(shadowRenderTarget)

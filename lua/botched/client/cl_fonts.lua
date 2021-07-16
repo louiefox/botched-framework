@@ -142,6 +142,22 @@ local function createFonts()
 		weight = 500,
 		outline = false,
 	} )
+
+	surface.CreateFont( "MontserratSemiBold18", {
+		font = "Montserrat SemiBold",
+		extended = false,
+		size = BOTCHED.FUNC.ScreenScale( 18 ),
+		weight = 500,
+		outline = false,
+	} )
+
+	surface.CreateFont( "MontserratSemiBold15", {
+		font = "Montserrat SemiBold",
+		extended = false,
+		size = BOTCHED.FUNC.ScreenScale( 15 ),
+		weight = 500,
+		outline = false,
+	} )
 end
 createFonts()
 
