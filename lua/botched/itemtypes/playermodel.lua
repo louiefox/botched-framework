@@ -5,8 +5,14 @@ ITEM:SetDescription( "A permanent model that the player can equip." )
 
 ITEM:AddReqInfo( BOTCHED.TYPE.String, "Model Path", "The path for the player model to set the player to." )
 ITEM:SetPermanent( true )
-ITEM:SetUseFunction( function( ply ) 
-    print( "HERE" )
+ITEM:SetLimitOneType( true )
+
+ITEM:SetEquipFunction( function( ply ) 
+    print( "EQUIP" )
+end )
+
+ITEM:SetUnEquipFunction( function( ply ) 
+    print( "UNEQUIP" )
 end )
 
 ITEM:SetModelDisplay( function( panel ) 

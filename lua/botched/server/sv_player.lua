@@ -11,11 +11,18 @@ hook.Add( "PlayerInitialSpawn", "Botched.PlayerInitialSpawn.LoadData", function(
                 local lockerData = {}
                 for k, v in pairs( data or {} ) do
                     if( not v.itemKey ) then continue end
-                    lockerData[v.itemKey] = tonumber( v.amount or "" ) or 1
+                    lockerData[v.itemKey] = { 
+                        Amount = tonumber( v.amount or "" ) or 1, 
+                        Equipped = tobool( v.equipped ) 
+                    }
+
+                    if( v.equipped == "NULL" ) then
+                        lockerData[v.itemKey].Equipped = false
+                    end
                 end
 
                 ply:Botched():SetLocker( lockerData )
-                ply:Botched():SendLocker()
+                ply:Botched():SendLockerItems( table.GetKeys( lockerData ) )
             end )
 
 			hook.Run( "Botched.Hooks.PlayerLoadData", ply, userID )
@@ -71,20 +78,20 @@ function BOTCHED.PLAYERMETA:SetLocker( locker )
     self.LockerData = locker
 end
 
-util.AddNetworkString( "Botched.SendLocker" )
-function BOTCHED.PLAYERMETA:SendLocker()
-    net.Start( "Botched.SendLocker" )
-        net.WriteTable( self:GetLocker() )
-    net.Send( self.Player )
-end
-
 util.AddNetworkString( "Botched.SendLockerItems" )
 function BOTCHED.PLAYERMETA:SendLockerItems( itemsTable )
+    local lockerItems = self:GetLocker()
+
     net.Start( "Botched.SendLockerItems" )
-        net.WriteUInt( table.Count( itemsTable ), 10 )
-        for k, v in pairs( itemsTable ) do
-            net.WriteString( k )
-            net.WriteUInt( v, 32 )
+        net.WriteUInt( #itemsTable, 10 )
+        for k, v in ipairs( itemsTable ) do
+            local lockerItem = lockerItems[v]
+            net.WriteString( v )
+            net.WriteBool( lockerItem == nil )
+
+            if( not lockerItem ) then continue end
+            net.WriteUInt( lockerItem.Amount or 1, 32 )
+            net.WriteBool( lockerItem.Equipped )
         end
     net.Send( self.Player )
 end
@@ -97,14 +104,23 @@ function BOTCHED.PLAYERMETA:AddLockerItems( ... )
     for k, v in ipairs( itemsToGive ) do
         if( k % 2 == 0 or not BOTCHED.CONFIG.LOCKER.Items[v] ) then continue end
 
-        locker[v] = (locker[v] or 0)+(itemsToGive[k+1] or 1)
+        local lockerItem = locker[v] or {}
+        lockerItem.Amount = (lockerItem.Amount or 0)+(itemsToGive[k+1] or 1)
 
-        BOTCHED.FUNC.SQLQuery( "INSERT OR REPLACE INTO botched_locker( userID, itemKey, amount ) VALUES(" .. self:GetUserID() .. ", '" .. v .. "'," .. locker[v] .. ");" )
+        locker[v] = lockerItem
 
-        itemsGiven[v] = locker[v]
+        BOTCHED.FUNC.SQLQuery( "SELECT * FROM botched_locker WHERE userID = '" .. self:GetUserID() .. "' AND itemKey = '" .. v .. "';", function( data )
+            if( data ) then
+                BOTCHED.FUNC.SQLQuery( "UPDATE botched_locker SET amount = " .. lockerItem.Amount .. " WHERE userID = '" .. self:GetUserID() .. "' AND itemKey = '" .. v .. "';" )
+            else
+                BOTCHED.FUNC.SQLQuery( "INSERT INTO botched_locker( userID, itemKey, amount ) VALUES(" .. self:GetUserID() .. ", '" .. v .. "', " .. lockerItem.Amount .. ");" )
+            end
+        end, true )
+
+        table.insert( itemsGiven, v )
     end
 
-    if( table.Count( itemsGiven ) < 1 ) then return end
+    if( #itemsGiven < 1 ) then return end
 
     self:SetLocker( locker )
     self:SendLockerItems( itemsGiven )
@@ -118,24 +134,31 @@ function BOTCHED.PLAYERMETA:TakeLockerItems( ... )
     for k, v in ipairs( itemsToTake ) do
         if( k % 2 == 0 or not BOTCHED.CONFIG.LOCKER.Items[v] ) then continue end
 
-        local newAmount = (locker[v] or 0)-(itemsToTake[k+1] or 1)
+        local lockerItem = locker[v] or {}
+        lockerItem.Amount = (lockerItem.Amount or 0)-(itemsToTake[k+1] or 1)
 
-        if( newAmount > 0 ) then
-            locker[v] = newAmount
+        if( lockerItem.Amount > 0 ) then
+            locker[v] = lockerItem
         else
             locker[v] = nil
         end
 
-        if( newAmount > 0 ) then
-            BOTCHED.FUNC.SQLQuery( "INSERT OR REPLACE INTO botched_locker( userID, itemKey, amount ) VALUES(" .. self:GetUserID() .. ", '" .. v .. "'," .. newAmount .. ");" )
+        if( lockerItem.Amount > 0 ) then
+            BOTCHED.FUNC.SQLQuery( "SELECT * FROM botched_locker WHERE userID = '" .. self:GetUserID() .. "' AND itemKey = '" .. v .. "';", function( data )
+                if( data ) then
+                    BOTCHED.FUNC.SQLQuery( "UPDATE botched_locker SET amount = " .. lockerItem.Amount .. " WHERE userID = '" .. self:GetUserID() .. "' AND itemKey = '" .. v .. "';" )
+                else
+                    BOTCHED.FUNC.SQLQuery( "INSERT INTO botched_locker( userID, itemKey, amount ) VALUES(" .. self:GetUserID() .. ", '" .. v .. "', " .. lockerItem.Amount .. ");" )
+                end
+            end, true )
         else
             BOTCHED.FUNC.SQLQuery( "DELETE FROM botched_locker WHERE userID = '" .. self:GetUserID() .. "' AND itemKey = '" .. v .. "';" )
         end
 
-        itemsTaken[v] = newAmount
+        table.insert( itemsTaken, v )
     end
 
-    if( table.Count( itemsTaken ) < 1 ) then return end
+    if( #itemsTaken < 1 ) then return end
 
     self:SetLocker( locker )
     self:SendLockerItems( itemsTaken )

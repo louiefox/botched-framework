@@ -16,8 +16,17 @@ local itemMeta = {
 	SetUseFunction = function( self, func )
 		self.UseFunction = func
 	end,
+	SetEquipFunction = function( self, func )
+		self.EquipFunction = func
+	end,
+	SetUnEquipFunction = function( self, func )
+		self.UnEquipFunction = func
+	end,
 	SetPermanent = function( self, bool )
 		self.Permanent = bool
+	end,
+	SetLimitOneType = function( self, bool )
+		self.LimitOneType = bool
 	end,
 	SetAllowInstantUse = function( self, bool )
 		self.AllowInstantUse = bool

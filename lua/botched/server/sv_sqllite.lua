@@ -13,7 +13,8 @@ if( not sql.TableExists( "botched_locker" ) ) then
 	BOTCHED.FUNC.SQLQuery( [[ CREATE TABLE botched_locker (
 		userID int NOT NULL,
 		itemKey varchar(20) NOT NULL,
-		amount int
+		amount int,
+		equipped bool
 	); ]] )
 end
 

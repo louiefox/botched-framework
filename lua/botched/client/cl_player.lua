@@ -4,23 +4,23 @@ net.Receive( "Botched.SendUserID", function()
 end )
 
 -- LOCKER FUNCTIONS --
-net.Receive( "Botched.SendLocker", function()
-    BOTCHED.LOCALPLYMETA.LockerData = net.ReadTable()
-
-    hook.Run( "Botched.Hooks.LockerUpdated" )
-end )
-
 net.Receive( "Botched.SendLockerItems", function()
     local lockerData = BOTCHED.LOCALPLYMETA.LockerData or {}
 
     local amount = net.ReadUInt( 10 )
     for i = 1, amount do
-        local itemKey, itemAmount = net.ReadString(), net.ReadUInt( 32 )
-        if( itemAmount > 0 ) then
-            lockerData[itemKey] = itemAmount
-        else
+        local itemKey, shouldDelete = net.ReadString(), net.ReadBool()
+
+        if( shouldDelete ) then
             lockerData[itemKey] = nil
+            continue
         end
+
+        local itemAmount, equipped = net.ReadUInt( 32 ), net.ReadBool()
+        lockerData[itemKey] = {
+            Amount = itemAmount,
+            Equipped = equipped
+        }
     end
 
     BOTCHED.LOCALPLYMETA.LockerData = lockerData

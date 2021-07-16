@@ -102,7 +102,7 @@ function PANEL:SetItemInfo( itemKey, amount, doClick, uniqueID )
             BOTCHED.FUNC.DrawNonParsedText( text, self.titleFont or "MontserratBold20", w/2, 10, BOTCHED.FUNC.GetTheme( 3 ), 1 )
         end
 
-        if( amount ) then draw.SimpleText( "x" .. string.Comma( amount ), "MontserratMedium20", w-10, h-10, BOTCHED.FUNC.GetTheme( 4, 75 ), TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM ) end
+        if( amount and amount > 1 ) then draw.SimpleText( "x" .. string.Comma( amount ), "MontserratMedium20", w-10, h-10, BOTCHED.FUNC.GetTheme( 4, 75 ), TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM ) end
 
         if( not stars or self.disableStars or stars < 1 ) then return end
 

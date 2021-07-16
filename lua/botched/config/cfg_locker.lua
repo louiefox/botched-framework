@@ -44,6 +44,14 @@ MODULE:AddVariable( "Items", "Locker Items", "Add/edit items for the locker syst
         Border = 1,
         Type = "playermodel",
         TypeInfo = { "models/player/Astolfo.mdl" }
+    },
+    ["50000_money"] = {
+        Name = "$50,000",
+        Model = "models/props/cs_assault/money.mdl",
+        Stars = 3,
+        Border = 3,
+        Type = "darkrp_money",
+        TypeInfo = { 50000 }
     }
 }, "botched_config_lockeritems" )
 
