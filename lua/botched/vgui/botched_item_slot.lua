@@ -26,19 +26,14 @@ function PANEL:SetItemInfo( itemKey, amount, doClick, uniqueID )
 
     self.hoverDraw = vgui.Create( "DPanel", self )
     self.hoverDraw:SetSize( self:GetSize() )
-    local alpha = 0
     self.hoverDraw.Paint = function( self2, w, h ) 
         draw.RoundedBox( 8, self.borderSize, self.borderSize, w-(2*self.borderSize), h-(2*self.borderSize), BOTCHED.FUNC.GetTheme( 1 ) )
 
         if( not doClick or not IsValid( self.info ) ) then return end
 
-        if( self.info:IsHovered() ) then
-            alpha = math.Clamp( alpha+10, 0, 50 )
-        else
-            alpha = math.Clamp( alpha-10, 0, 50 )
-        end
+        self2:CreateFadeAlpha( 0.2, 50 )
 
-        draw.RoundedBox( 8, self.borderSize, self.borderSize, w-(2*self.borderSize), h-(2*self.borderSize), BOTCHED.FUNC.GetTheme( 2, alpha ) )
+        draw.RoundedBox( 8, self.borderSize, self.borderSize, w-(2*self.borderSize), h-(2*self.borderSize), BOTCHED.FUNC.GetTheme( 2, self2.alpha ) )
         BOTCHED.FUNC.DrawClickCircle( self.info, w-(2*self.borderSize), h-(2*self.borderSize), BOTCHED.FUNC.GetTheme( 2, 150 ), 8, false, self.borderSize+((h-(2*self.borderSize))/2) )
     end
 
