@@ -1,3 +1,4 @@
+-- Config --
 local function WriteConfigTable( configTable )
     net.WriteUInt( table.Count( configTable ), 5 )
 
@@ -56,4 +57,87 @@ net.Receive( "Botched.RequestSaveConfigChanges", function( len, ply )
     print( "[BOTCHED FRAMEWORK] Config Saved: " .. table.Count( changedConfig ) .. " Module(s), " .. variableCount .. " Variable(s)" )
 
     BOTCHED.FUNC.SendConfigUpdate( player.GetAll(), changedConfig )
+end )
+
+-- Commands --
+local adminCommands = {}
+adminCommands["setgems"] = {
+    Arguments = {
+        [1] = { "Player", "Victim" },
+        [2] = { "Integer", "Gems" }
+    },
+    Func = function( caller, ply, gems )
+        ply:Botched():SetGems( gems )
+
+        if( not IsValid( caller ) ) then return end
+        BOTCHED.FUNC.SendNotification( caller, 1, 5, "Set " .. ply:Nick() .. "'s gems to ".. gems .. "!" )
+    end
+}
+adminCommands["settokens"] = {
+    Arguments = {
+        [1] = { "Player", "Victim" },
+        [2] = { "Integer", "Tokens" }
+    },
+    Func = function( caller, ply, tokens )
+        ply:Botched():SetExchangeTokens( tokens )
+
+        if( not IsValid( caller ) ) then return end
+        BOTCHED.FUNC.SendNotification( caller, 1, 5, "Set " .. ply:Nick() .. "'s tokens to ".. tokens .. "!" )
+    end
+}
+adminCommands["giveitem"] = {
+    Arguments = {
+        [1] = { "Player", "Victim" },
+        [2] = { "String", "ItemKey" },
+        [3] = { "Integer", "Amount" }
+    },
+    Func = function( caller, ply, itemKey, amount )
+        ply:Botched():AddLockerItems( itemKey, amount )
+
+        local itemConfig = BOTCHED.CONFIG.LOCKER.Items[itemKey]
+        if( not itemConfig ) then return end
+
+        if( not IsValid( caller ) ) then return end
+        BOTCHED.FUNC.SendNotification( caller, 1, 5, "Given " .. ply:Nick() .. " ".. amount .. " " .. itemConfig.Name .. "!" )
+    end
+}
+adminCommands["givegempackage"] = {
+    Arguments = {
+        [1] = { "Player", "Victim" },
+        [2] = { "String", "PackageKey" }
+    },
+    Func = function( caller, ply, packageKey )
+        ply:Botched():GiveGemPackage( packageKey )
+
+        local packageConfig = BOTCHED.CONFIG.GACHA.GemStore[packageKey]
+        if( not packageConfig ) then return end
+
+        if( not IsValid( caller ) ) then return end
+        BOTCHED.FUNC.SendNotification( caller, 1, 5, "Given " .. ply:Nick() .. " " .. packageConfig.Name .. "!" )
+    end
+}
+
+concommand.Add( "botched_admincmd", function( ply, cmd, args )
+    if( IsValid( ply ) and not BOTCHED.FUNC.HasAdminAccess( ply ) ) then return end
+
+    local commandTable = adminCommands[args[1] or ""]
+    if( not commandTable ) then return end
+
+    local commandArguments = {}
+    for k, v in pairs( commandTable.Arguments or {} ) do
+        local argument = args[k+1]
+        if( not argument ) then return end
+
+        if( v[1] == "Player" ) then
+            argument = player.GetBySteamID64( argument )
+            if( not IsValid( argument ) ) then return end
+        elseif( v[1] == "Integer" ) then
+            argument = tonumber( argument )
+            if( not isnumber( argument ) ) then return end
+        end
+
+        commandArguments[k] = argument
+    end
+
+    commandTable.Func( ply, unpack( commandArguments ) )
 end )
