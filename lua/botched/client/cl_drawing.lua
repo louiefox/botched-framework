@@ -456,3 +456,22 @@ end
 function BOTCHED.FUNC.DrawNonParsedText(text, font, x, y, color, xAlign)
     return draw.DrawText(safeText(text), font, x, y, color, xAlign)
 end
+
+function BOTCHED.FUNC.NiceTrimText( text, font, w )
+	local newText = string.Trim( text )
+	local splitText = string.Split( newText, " " )
+
+	surface.SetFont( font )
+
+	while( surface.GetTextSize( newText ) >= w and #splitText > 0 ) do
+		newText = string.sub( newText, 1, string.len( newText )-string.len( splitText[#splitText] ) )
+		newText = string.Trim( newText )
+		table.remove( splitText )
+	end
+
+	if( newText != text ) then
+		newText = newText .. "..."
+	end
+
+	return newText
+end

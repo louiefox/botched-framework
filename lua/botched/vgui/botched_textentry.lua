@@ -14,6 +14,7 @@ function PANEL:Init()
 	self.textEntry:SetText( "" )
 	self.textEntry:SetTextColor( Color( 255, 255, 255, 20 ) )
 	self.textEntry:SetCursorColor( Color( 255, 255, 255 ) )
+	self.textEntry.backTextColor = Color( 255, 255, 255, 20 )
 	self.textEntry.Paint = function( self2, w, h )
 		if( self2:GetTextColor().a != 255 or self2:GetTextColor().a != 20 ) then
 			self2:SetTextColor( Color( 255, 255, 255, (self.alpha or 20) ) )
@@ -36,7 +37,7 @@ function PANEL:Init()
 		self2:DrawTextEntryText( self2:GetTextColor(), self2:GetHighlightColor(), self2:GetCursorColor() )
 	
 		if( not self2:IsEditing() and self2:GetText() == "" ) then
-			draw.SimpleText( self2.backText or "", self2:GetFont(), 0, h/2, (self2.backTextColor or Color( 255, 255, 255, 20 )), 0, TEXT_ALIGN_CENTER )
+			draw.SimpleText( self2.backText or "", self2:GetFont(), 0, h/2, self2.backTextColor, 0, TEXT_ALIGN_CENTER )
 		end
 	end
 	self.textEntry.OnChange = function()
@@ -55,6 +56,10 @@ end
 
 function PANEL:RequestFocus()
     return self.textEntry:RequestFocus()
+end
+
+function PANEL:IsEditing()
+    return self.textEntry:IsEditing()
 end
 
 function PANEL:SetValue( val )

@@ -1,4 +1,12 @@
 local function createFonts()
+	surface.CreateFont( "MontserratMedium15", {
+		font = "Montserrat Medium",
+		extended = false,
+		size = BOTCHED.FUNC.ScreenScale( 15 ),
+		weight = 500,
+		outline = false,
+	} )
+	
 	surface.CreateFont( "MontserratMedium17", {
 		font = "Montserrat Medium",
 		extended = false,

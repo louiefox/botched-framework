@@ -104,7 +104,6 @@ function PANEL:OnVScroll( iOffset )
 end
 
 function PANEL:ScrollToChild( panel )
-
 	self:PerformLayout()
 
 	local x, y = self.pnlCanvas:GetChildPosition( panel )
@@ -114,7 +113,6 @@ function PANEL:ScrollToChild( panel )
 	y = y - self:GetTall() * 0.5
 
 	self.VBar:AnimateTo( y, 0.5, 0, 0.5 )
-
 end
 
 function PANEL:PerformLayout()

@@ -17,7 +17,7 @@ function PANEL:FillPanel()
             local x, y = self2:LocalToScreen( 0, 0 )
 
             BOTCHED.FUNC.BeginShadow( "admin_config_side", 0, y, ScrW(), y+h )
-            BOTCHED.FUNC.SetShadowSize( "admin_config_side", w, h-4 )
+            BOTCHED.FUNC.SetShadowSize( "admin_config_side", w, h )
             surface.SetDrawColor( BOTCHED.FUNC.GetTheme( 1 ) )
             surface.DrawRect( x, y, w, h )
             BOTCHED.FUNC.EndShadow( "admin_config_side", x, y, 1, 2, 2, 255, 0, 0, true )
@@ -36,19 +36,20 @@ function PANEL:FillPanel()
     self.searchBar:Dock( TOP )
     self.searchBar:SetTall( BOTCHED.FUNC.ScreenScale( 40 ) )
     self.searchBar:DockMargin( margin10, margin10, margin10, margin10 )
-    -- self.searchBar:SetBackText( "Search" )
-    -- self.searchBar:SetBackColor( BOTCHED.FUNC.GetTheme( 2, 50 ) )
-    -- self.searchBar:SetHighlightColor( BOTCHED.FUNC.GetTheme( 2, 50 ) )
-    -- self.searchBar:SetCornerRadius( 0 )
-    -- self.searchBar:SetFont( "MontserratMedium20" )
-    -- self.searchBar.OnChange = function()
-    --     self:Refresh()
-    -- end
 
+    local keyData = {}
     for k, v in pairs( BOTCHED.CONFIGMETA ) do
-        for key, val in pairs( v:GetSortedVariables() ) do
-            self.searchBar:AddChoice( key, val.Name, val.Description )
+        for key, val in pairs( v.Variables ) do
+            self.searchBar:AddChoice( k .. key, val.Name, val.Description )
+            keyData[k .. key] = { k, key }
         end
+    end
+
+    self.searchBar.OnSelect = function( self2, index )
+        local keyInfo = keyData[index]
+        if( not keyInfo ) then return end
+
+        self:GotoVariableOnPage( keyInfo[1], keyInfo[2] )
     end
 
     self.contents = vgui.Create( "DPanel", self )
@@ -68,8 +69,11 @@ function PANEL:FillPanel()
         local scrollPanel = vgui.Create( "botched_scrollpanel", page )
         scrollPanel:Dock( FILL )
 
-        page.Refresh = function()
+        page.scrollPanel = scrollPanel
+
+        page.Refresh = function( self2 )
             scrollPanel:Clear()
+            self2.variablePanels = {}
 
             for key, val in pairs( v:GetSortedVariables() ) do
                 local headerH = BOTCHED.FUNC.ScreenScale( 75 )
@@ -99,9 +103,15 @@ function PANEL:FillPanel()
                         draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, 100 ) )
                     end
 
+                    self2:CreateFadeAlpha( false, 0, 0.5, false, self2.highlight, 100, 0.5 )
+
+                    draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, self2.alpha ) )
+
                     draw.SimpleText( val.Name, "MontserratBold22", margin25, headerH/2+1, BOTCHED.FUNC.GetTheme( 3 ), 0, TEXT_ALIGN_BOTTOM )
                     draw.SimpleText( val.Description, "MontserratMedium21", margin25, headerH/2-1, BOTCHED.FUNC.GetTheme( 4, 100 ) )
                 end
+
+                self2.variablePanels[val.Key] = variablePanel
 
                 if( customElement ) then
                     local vguiElement
@@ -113,7 +123,8 @@ function PANEL:FillPanel()
                     button.Paint = function( self2, w, h ) 
                         self2:CreateFadeAlpha( 0.2, 155 )
                     end
-                    button.textureRotation = 0
+                    button.textureRotation = cookie.GetNumber( "botched.configexpanded." .. val.Key, 1 ) == 1 and 0 or -90
+                    variablePanel.expanding = cookie.GetNumber( "botched.configexpanded." .. val.Key, 1 ) == 1
                     button.DoRotationAnim = function( self2, expanding )
                         local anim = self2:NewAnimation( 0.2, 0, -1 )
                     
@@ -126,6 +137,9 @@ function PANEL:FillPanel()
                         end
                     end
                     button.SetExpanded = function( self2, expanded, noAnim )
+                        if( variablePanel.expanding == expanded ) then return end
+                        variablePanel.expanding = expanded
+
                         if( expanded ) then
                             variablePanel:SizeTo( variablePanel.actualW, variablePanel.fullHeight, 0.2 )
                             self2:DoRotationAnim( true )
@@ -209,6 +223,7 @@ end
 function PANEL:AddPage( panel, id, configMeta )
     panel:SetVisible( false )
     panel:SetAlpha( 0 )
+    panel.ConfigID = id
 
     local key = #self.pages+1
     self.pages[key] = panel
@@ -252,7 +267,7 @@ function PANEL:AddPage( panel, id, configMeta )
 
         draw.SimpleText( "Modified: " .. lastModified, "MontserratBold17", h, (h/2)-(contentH/2)+textY, BOTCHED.FUNC.GetTheme( 4, textAlpha ) )
 
-        draw.SimpleText( "File Size: " .. math.Round( (configMeta.FileSize or 0) / 1000, 2 ) .. "KB", "MontserratBold17", h, (h/2)-(contentH/2)+textY+infoTextY, BOTCHED.FUNC.GetTheme( 4, textAlpha ) )
+        draw.SimpleText( "File Size: " .. string.NiceSize( configMeta.FileSize or 0 ), "MontserratBold17", h, (h/2)-(contentH/2)+textY+infoTextY, BOTCHED.FUNC.GetTheme( 4, textAlpha ) )
     end
     button.DoClick = function()
         self:SetActivePage( key )
@@ -274,6 +289,40 @@ function PANEL:SetActivePage( key )
     self.pages[key]:SetVisible( true )
     self.pages[key]:AlphaTo( 255, 0.2 )
     self.activePage = key
+end
+
+function PANEL:OpenPageByID( id )
+    for k, v in ipairs( self.pages ) do
+        if( (v.ConfigID or "") == id ) then
+            self:SetActivePage( k )
+            return v
+        end
+    end
+end
+
+function PANEL:GotoVariableOnPage( id, key )
+    local page = self:OpenPageByID( id )
+    if( not IsValid( page ) ) then return end
+
+    local variablePanel = page.variablePanels[key]
+    if( not IsValid( variablePanel ) ) then return end
+
+    timer.Simple( 0, function() 
+        page.scrollPanel:ScrollToChild( variablePanel ) 
+    end )
+
+    timer.Simple( 0.5, function()
+        if( IsValid( variablePanel.button ) ) then
+            variablePanel.button:SetExpanded( true )
+        end
+    end )
+
+    variablePanel.highlight = true
+
+    timer.Simple( 1, function()
+        if( not IsValid( variablePanel ) ) then return end
+        variablePanel.highlight = false
+    end )
 end
 
 function PANEL:CreateSavePopout()
