@@ -22,7 +22,7 @@ MODULE:AddVariable( "Borders", "Theme Borders", "Themes used for borders on item
     { Name = "Bronze", Colors = { Color( 250, 158, 117 ), Color( 249, 220, 186 ), Color( 220, 126, 74 ), Color( 250, 186, 151 ) } },
     { Name = "Silver", Colors = { Color( 196, 203, 209 ), Color( 255, 254, 255 ), Color( 180, 181, 212 ), Color( 219, 235, 250 ) } },
     { Name = "Gold", Colors = { Color( 252, 205, 117 ), Color( 249, 249, 151 ), Color( 243, 178, 62 ), Color( 255, 223, 122 ) } },
-    { Name = "Diamond", Colors = { Color( 134, 240, 240 ), Color( 141, 252, 252 ), Color( 81, 196, 196 ), Color( 135, 245, 245 ) } },
+    --{ Name = "Diamond", Colors = { Color( 134, 240, 240 ), Color( 141, 252, 252 ), Color( 81, 196, 196 ), Color( 135, 245, 245 ) } },
     { Name = "Rainbow", Colors = rainbowColors, Anim = true }
 }, "botched_config_borders" )
 
