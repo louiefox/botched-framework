@@ -138,3 +138,98 @@ function PANEL:Paint( w, h )
 end
 
 derma.DefineControl( "botched_combo_description", "", PANEL, "DButton" )
+
+
+local PANEL = {}
+
+function PANEL:Init()
+	self:SetTall( BOTCHED.FUNC.ScreenScale( 50 ) )
+	self:SetText( "" )
+
+	self.choices = {}
+	self.choiceHeight = BOTCHED.FUNC.ScreenScale( 50 )
+
+	self:AddChoice( "test", "test", "test" )
+	self:AddChoice( "test1", "test1", "test1" )
+
+	self.textEntry = vgui.Create( "botched_textentry", self )
+	self.textEntry:Dock( FILL )
+	self.textEntry.OnChange = function()
+		self:Open()
+	end
+	self.textEntry.OnGetFocus = function()
+		self:Open()
+	end
+end
+
+function PANEL:Open()
+	if( IsValid( self.menu ) ) then 
+		self.menu:Remove()
+	end
+
+	self.opened = true
+
+	self.menu = vgui.Create( "botched_scrollpanel", self:GetParent() )
+	self.menu:SetPos( self:LocalToScreen( self:GetParent():ScreenToLocal( 0, self:GetTall() ) ) )
+	self.menu:SetSize( self:GetWide(), 0 )
+	self.menu.GetDeleteSelf = function() return true end
+	self.menu.OnRemove = function()
+		if( not IsValid( self ) ) then return end
+		self.lastDeleted = CurTime()
+		self.opened = false
+	end
+	self.menu.Think = function()
+		if( not IsValid( self ) or not self.textEntry.textEntry:HasFocus() ) then
+			self.menu:Remove()
+		end
+	end
+	self.menu:SetBarBackColor( BOTCHED.FUNC.GetTheme( 1, 100 ) )
+	self.menu:SetBarColor( BOTCHED.FUNC.GetTheme( 3, 50 ) )
+	self.menu:SetBarDownColor( BOTCHED.FUNC.GetTheme( 3, 100 ) )
+	self.menu:GetVBar():SetRounded( 0 )
+	self.menu.paintInMask = {}
+	self.menu.Paint = function( self2, w, h )
+		draw.RoundedBoxEx( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 1 ), false, false, true, true )
+		draw.RoundedBoxEx( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, 100 ), false, false, true, true )
+
+		BOTCHED.FUNC.DrawRoundedExMask( 8, 0, 0, w, h, function()
+			for k, v in ipairs( self2.paintInMask ) do
+				v:PaintManual()
+			end
+        end, false, false, true, true )
+	end
+
+	self.menu:GetVBar():SetPaintedManually( true )
+	table.insert( self.menu.paintInMask, self.menu:GetVBar() )
+
+	for k, v in pairs( self.choices ) do
+		local button = vgui.Create( "DButton", self.menu )
+        button:Dock( TOP )
+        button:SetTall( self.choiceHeight )
+        button:SetText( "" )
+        button:SetPaintedManually( true )
+        button.Paint = function( self2, w, h )
+            self2:CreateFadeAlpha( 0.2, 100 )
+
+			draw.RoundedBoxEx( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 3, self2.alpha ), false, false, false, false )
+
+			local margin10 = BOTCHED.FUNC.ScreenScale( 10 )
+			draw.SimpleText( v[1], "MontserratBold20", margin10, h/2+1, BOTCHED.FUNC.GetTheme( 3 ), 0, TEXT_ALIGN_BOTTOM )
+			draw.SimpleText( v[2], "MontserratMedium17", margin10, h/2-1, BOTCHED.FUNC.GetTheme( 4, 150 ) )
+        end
+        button.DoClick = function()
+            self:SelectChoice( k )
+			self.menu:Remove()
+        end
+
+		table.insert( self.menu.paintInMask, button )
+	end
+
+	self.menu:SizeTo( self:GetWide(), math.min( table.Count( self.choices ), 3 )*self.choiceHeight, 0.2 )
+end
+
+function PANEL:Paint( w, h )
+
+end
+
+derma.DefineControl( "botched_combo_description_search", "", PANEL, "botched_combo_description" )

@@ -129,14 +129,22 @@ for k, v in pairs( file.Find( "botched/config/*.lua", "LUA" ) ) do
 	include( "botched/config/" .. v )
 end
 
+if( not file.Exists( "botched/config", "DATA" ) ) then
+	file.CreateDir( "botched/config" )
+end
+
 BOTCHED.CONFIG = {}
 for k, v in pairs( BOTCHED.CONFIGMETA ) do
+	local savedModule = util.JSONToTable( file.Read( "botched/config/" .. k .. ".txt", "DATA" ) or "" ) or {}
+
 	local module = {}
 	for key, val in pairs( v.Variables ) do
-		module[key] = val.Default
+		module[key] = savedModule[key] or val.Default
 	end
 
-	BOTCHED.CONFIG[v.ID] = module
+	BOTCHED.CONFIG[k] = module
+
+	v.LastModified = file.Time( "botched/config/" .. k .. ".txt", "DATA" ) or 0
 end
 
 BOTCHED.CONFIG_LOADED = true

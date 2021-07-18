@@ -10,24 +10,45 @@ function PANEL:FillPanel()
 
     local navigation = vgui.Create( "DPanel", self )
     navigation:Dock( LEFT )
-    navigation:DockMargin( margin25, margin25, margin25, margin25 )
-    navigation:SetWide( ScrW()*0.1 )
+    navigation:DockMargin( 0, 0, margin25, 0 )
+    navigation:SetWide( ScrW()*0.11 )
     navigation.Paint = function( self2, w, h )
-        draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, 100 ) )
+        if( self.FullyOpened ) then
+            local x, y = self2:LocalToScreen( 0, 0 )
+
+            BOTCHED.FUNC.BeginShadow( "admin_config_side", 0, y, ScrW(), y+h )
+            BOTCHED.FUNC.SetShadowSize( "admin_config_side", w, h-4 )
+            surface.SetDrawColor( BOTCHED.FUNC.GetTheme( 1 ) )
+            surface.DrawRect( x, y, w, h )
+            BOTCHED.FUNC.EndShadow( "admin_config_side", x, y, 1, 2, 2, 255, 0, 0, true )
+
+            surface.SetDrawColor( BOTCHED.FUNC.GetTheme( 1 ) )
+            surface.DrawRect( 0, 0, w, h )
+
+            surface.SetDrawColor( BOTCHED.FUNC.GetTheme( 2, 25 ) )
+            surface.DrawRect( 0, 0, w, h )
+        end
     end
 
     self.navigation = navigation
 
-    self.searchBar = vgui.Create( "botched_textentry", navigation )
+    self.searchBar = vgui.Create( "botched_combo_description_search", navigation )
     self.searchBar:Dock( TOP )
-    self.searchBar:SetTall( BOTCHED.FUNC.ScreenScale( 30 ) )
-    self.searchBar:DockMargin( margin10, margin10, margin10, margin25 )
-    self.searchBar:SetBackText( "Search" )
-    self.searchBar:SetBackColor( BOTCHED.FUNC.GetTheme( 1 ) )
-    self.searchBar:SetHighlightColor( BOTCHED.FUNC.GetTheme( 2, 50 ) )
-    self.searchBar:SetFont( "MontserratMedium20" )
-    self.searchBar.OnChange = function()
-        self:Refresh()
+    self.searchBar:SetTall( BOTCHED.FUNC.ScreenScale( 40 ) )
+    self.searchBar:DockMargin( margin10, margin10, margin10, margin10 )
+    -- self.searchBar:SetBackText( "Search" )
+    -- self.searchBar:SetBackColor( BOTCHED.FUNC.GetTheme( 2, 50 ) )
+    -- self.searchBar:SetHighlightColor( BOTCHED.FUNC.GetTheme( 2, 50 ) )
+    -- self.searchBar:SetCornerRadius( 0 )
+    -- self.searchBar:SetFont( "MontserratMedium20" )
+    -- self.searchBar.OnChange = function()
+    --     self:Refresh()
+    -- end
+
+    for k, v in pairs( BOTCHED.CONFIGMETA ) do
+        for key, val in pairs( v:GetSortedVariables() ) do
+            self.searchBar:AddChoice( key, val.Name, val.Description )
+        end
     end
 
     self.contents = vgui.Create( "DPanel", self )
@@ -140,7 +161,7 @@ function PANEL:FillPanel()
                     vguiElement = vgui.Create( val.VguiElement, variablePanel )
                     vguiElement:Dock( FILL )
                     vguiElement:DockMargin( margin25, margin25, margin25, margin25 )
-                    vguiElement:SetWide( self:GetWide()-self.navigation:GetWide()-(5*margin25)-(2*margin10) )
+                    vguiElement:SetWide( self:GetWide()-self.navigation:GetWide()-(4*margin25)-(2*margin10) )
                     vguiElement.GetYShadowScissor = function()
                         if( not self.FullyOpened ) then return 0, 0 end
                         return self.startY+25, self.startY+self.actualH-25
@@ -173,7 +194,7 @@ function PANEL:FillPanel()
             end
         end
 
-        self:AddPage( page, v.Icon, v.Title )
+        self:AddPage( page, k, v )
     end
 
     hook.Add( "Botched.Hooks.ConfigUpdated", "Botched.Botched.Hooks.ConfigUpdated.ConfigPage", function() self:Refresh() end )
@@ -185,50 +206,53 @@ function PANEL:Refresh()
     end
 end
 
-function PANEL:AddPage( panel, icon, text )
+function PANEL:AddPage( panel, id, configMeta )
     panel:SetVisible( false )
     panel:SetAlpha( 0 )
 
     local key = #self.pages+1
     self.pages[key] = panel
 
-    text = string.upper( text )
+    local text = string.upper( configMeta.Title )
 
     surface.SetFont( "MontserratBold22" )
-    local textX, textY = surface.GetTextSize( text )
+    local textY = select( 2, surface.GetTextSize( text ) )
 
-    local iconMat = Material( icon )
+    surface.SetFont( "MontserratBold17" )
+    local infoTextY = select( 2, surface.GetTextSize( text ) )
 
-    local margin10 = BOTCHED.FUNC.ScreenScale( 10 )
+    local contentH = textY+infoTextY+infoTextY
 
     local button = vgui.Create( "DButton", self.navigation )
     button:Dock( TOP )
-    button:SetTall( BOTCHED.FUNC.ScreenScale( 40 ) )
-    button:DockMargin( margin10, 0, margin10, margin10 )
+    button:SetTall( BOTCHED.FUNC.ScreenScale( 80 ) )
     button:SetText( "" )
+    local iconMat = Material( configMeta.Icon )
+    local modifiedRefresh = 0
+    local lastModified = "Never"
     button.Paint = function( self2, w, h )
         self2:CreateFadeAlpha( 0.2, 50, false, false, self.activePage == key, 155, 0.2 )
 
-        if( self.FullyOpened ) then
-            local x, y = self2:LocalToScreen( 0, 0 )
-
-            BOTCHED.FUNC.BeginShadow( "adminmenu_config_" .. text )
-            draw.RoundedBox( 8, x, y, w, h, BOTCHED.FUNC.GetTheme( 2 ) )
-            BOTCHED.FUNC.EndShadow( "adminmenu_config_" .. text, x, y, 1, 1, 1, 255, 0, 0, false )
-        end
-
-        draw.RoundedBox( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2 ) )
-        draw.RoundedBox( 8, 2, 2, w-4, h-4, BOTCHED.FUNC.GetTheme( 1 ) )
-        draw.RoundedBox( 8, 2, 2, w-4, h-4, BOTCHED.FUNC.GetTheme( 2, self2.alpha/2 ) )
+        surface.SetDrawColor( BOTCHED.FUNC.GetTheme( 2, self2.alpha ) )
+        surface.DrawRect( 0, 0, w, h )
 
         local textAlpha = 100+self2.alpha
 
-        surface.SetDrawColor( BOTCHED.FUNC.GetTheme( 4, textAlpha ) )
+        surface.SetDrawColor( BOTCHED.FUNC.GetTheme( 3, textAlpha ) )
         surface.SetMaterial( iconMat )
-        local iconSize = 16
-        surface.DrawTexturedRect( (w/2)-(textX/2)-iconSize-5, (h/2)-(iconSize/2), iconSize, iconSize )
+        local iconSize = BOTCHED.FUNC.ScreenScale( 32 )
+        surface.DrawTexturedRect( (h/2)-(iconSize/2), (h/2)-(iconSize/2), iconSize, iconSize )
 
-        draw.SimpleText( text, "MontserratBold22", w/2, h/2, BOTCHED.FUNC.GetTheme( 4, textAlpha ), 1, 1 )
+        draw.SimpleText( text, "MontserratBold22", h, (h/2)-(contentH/2), BOTCHED.FUNC.GetTheme( 3, textAlpha ) )
+
+        if( CurTime() >= modifiedRefresh ) then
+            lastModified = ((configMeta.LastModified or 0) > 0 and BOTCHED.FUNC.FormatLetterTime( os.time()-configMeta.LastModified ) .. " ago") or "Never"
+            modifiedRefresh = CurTime()+5
+        end
+
+        draw.SimpleText( "Modified: " .. lastModified, "MontserratBold17", h, (h/2)-(contentH/2)+textY, BOTCHED.FUNC.GetTheme( 4, textAlpha ) )
+
+        draw.SimpleText( "File Size: " .. math.Round( (configMeta.FileSize or 0) / 1000, 2 ) .. "KB", "MontserratBold17", h, (h/2)-(contentH/2)+textY+infoTextY, BOTCHED.FUNC.GetTheme( 4, textAlpha ) )
     end
     button.DoClick = function()
         self:SetActivePage( key )

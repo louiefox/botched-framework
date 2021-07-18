@@ -6,11 +6,16 @@ local function ReadConfigTable()
         local moduleKey = net.ReadString()
         BOTCHED.CONFIG[moduleKey] = BOTCHED.CONFIG[moduleKey] or {}
 
+        local configMeta = BOTCHED.CONFIGMETA[moduleKey] or {}
+        configMeta.LastModified = net.ReadUInt( 32 )
+
         for i = 1, net.ReadUInt( 5 ) do
             local variable = net.ReadString()
             BOTCHED.CONFIG[moduleKey][variable] = BOTCHED.FUNC.ReadTypeValue( BOTCHED.FUNC.GetConfigVariableType( moduleKey, variable ) )
             variableCount = variableCount+1
         end
+
+        configMeta.FileSize = string.len( util.TableToJSON( BOTCHED.CONFIG[moduleKey], true ) )
     end
 
     return moduleCount, variableCount

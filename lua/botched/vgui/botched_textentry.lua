@@ -45,6 +45,9 @@ function PANEL:Init()
     self.textEntry.OnEnter = function()
         if( self.OnEnter ) then self:OnEnter() end
     end
+    self.textEntry.OnGetFocus = function()
+        if( self.OnGetFocus ) then self:OnGetFocus() end
+    end
     self.textEntry.OnLoseFocus = function()
         if( self.OnLoseFocus ) then self:OnLoseFocus() end
     end

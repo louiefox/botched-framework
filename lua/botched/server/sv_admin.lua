@@ -1,9 +1,10 @@
 -- Config --
-local function WriteConfigTable( configTable )
+local function WriteConfigTable( ply, configTable )
     net.WriteUInt( table.Count( configTable ), 5 )
 
     for k, v in pairs( configTable ) do
         net.WriteString( k )
+        net.WriteUInt( BOTCHED.CONFIGMETA[k].LastModified, 32 )
         net.WriteUInt( table.Count( v ), 5 )
 
         for key, val in pairs( v ) do
@@ -16,14 +17,14 @@ end
 util.AddNetworkString( "Botched.SendConfig" )
 function BOTCHED.FUNC.SendConfig( ply )
     net.Start( "Botched.SendConfig" )
-        WriteConfigTable( BOTCHED.CONFIG )
+        WriteConfigTable( ply, BOTCHED.CONFIG )
     net.Send( ply )
 end
 
 util.AddNetworkString( "Botched.SendConfigUpdate" )
 function BOTCHED.FUNC.SendConfigUpdate( ply, changedConfig )
     net.Start( "Botched.SendConfigUpdate" )
-        WriteConfigTable( changedConfig )
+        WriteConfigTable( ply, changedConfig )
     net.Send( ply )
 end
 
@@ -48,10 +49,14 @@ net.Receive( "Botched.RequestSaveConfigChanges", function( len, ply )
     for k, v in pairs( changedConfig ) do
         if( not BOTCHED.CONFIG[k] ) then continue end
 
+        BOTCHED.CONFIGMETA[k].LastModified = os.time()
+
         for key, val in pairs( v ) do
             BOTCHED.CONFIG[k][key] = val
             variableCount = variableCount+1
         end
+
+        file.Write( "botched/config/" .. k .. ".txt", util.TableToJSON( BOTCHED.CONFIG[k], true ) )
     end
 
     print( "[BOTCHED FRAMEWORK] Config Saved: " .. table.Count( changedConfig ) .. " Module(s), " .. variableCount .. " Variable(s)" )

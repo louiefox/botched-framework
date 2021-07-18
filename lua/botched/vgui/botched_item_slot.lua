@@ -31,9 +31,9 @@ function PANEL:SetItemInfo( itemKey, amount, doClick, uniqueID )
 
         if( not doClick or not IsValid( self.info ) ) then return end
 
-        self2:CreateFadeAlpha( 0.2, 50 )
+        self.info:CreateFadeAlpha( 0.2, 50 )
 
-        draw.RoundedBox( 8, self.borderSize, self.borderSize, w-(2*self.borderSize), h-(2*self.borderSize), BOTCHED.FUNC.GetTheme( 2, self2.alpha ) )
+        draw.RoundedBox( 8, self.borderSize, self.borderSize, w-(2*self.borderSize), h-(2*self.borderSize), BOTCHED.FUNC.GetTheme( 2, self.info.alpha ) )
         BOTCHED.FUNC.DrawClickCircle( self.info, w-(2*self.borderSize), h-(2*self.borderSize), BOTCHED.FUNC.GetTheme( 2, 150 ), 8, false, self.borderSize+((h-(2*self.borderSize))/2) )
     end
 

@@ -1,7 +1,7 @@
 local MODULE = BOTCHED.FUNC.CreateConfigModule( "GENERAL" )
 
 MODULE:SetTitle( "Base" )
-MODULE:SetIcon( "botched/icons/crafting.png" )
+MODULE:SetIcon( "botched/icons/base.png" )
 MODULE:SetDescription( "Config for the base framework." )
 
 MODULE:AddVariable( "DisplayDistance3D2D", "3D2D Render Distance", "The distance at which 3D2D panels should render.", BOTCHED.TYPE.Int, 500000 )

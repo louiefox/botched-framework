@@ -1,7 +1,7 @@
 local MODULE = BOTCHED.FUNC.CreateConfigModule( "LOCKER" )
 
 MODULE:SetTitle( "Items" )
-MODULE:SetIcon( "botched/icons/inventory.png" )
+MODULE:SetIcon( "botched/icons/inventory_32.png" )
 MODULE:SetDescription( "Config for the locker system and items." )
 
 MODULE:AddVariable( "Items", "Locker Items", "Add/edit items for the locker system and other modules.", BOTCHED.TYPE.Table, {

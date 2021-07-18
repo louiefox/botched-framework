@@ -1,20 +1,7 @@
 resource.AddFile( "resource/fonts/montserrat-bold.ttf" )
 resource.AddFile( "resource/fonts/montserrat-medium.ttf" )
 
-function BOTCHED.FUNC.SQLQuery( queryStr, func, singleRow )
-	local query
-	if( not singleRow ) then
-		query = sql.Query( queryStr )
-	else
-		query = sql.QueryRow( queryStr, 1 )
-	end
-	
-	if( query == false ) then
-		print( "[Botched SQLLite] ERROR", sql.LastError() )
-	elseif( func ) then
-		func( query )
-	end
-end
+include( "botched/sv_database.lua" )
 
 -- CLIENT LOAD --
 for k, v in pairs( file.Find( "botched/client/*.lua", "LUA" ) ) do
