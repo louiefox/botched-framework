@@ -4,7 +4,8 @@ function playerMeta:Botched()
 	if( SERVER ) then
 		if( not self.BOTCHED_PLAYERMETA ) then
 			self.BOTCHED_PLAYERMETA = {
-				Player = self
+				Player = self,
+				TempItemData = {}
 			}
 
 			setmetatable( self.BOTCHED_PLAYERMETA, BOTCHED.PLAYERMETA )
@@ -36,4 +37,8 @@ end
 -- LOCKER FUNCTIONS --
 function BOTCHED.PLAYERMETA:GetLocker()
 	return self.LockerData or {}
+end
+
+function BOTCHED.PLAYERMETA:GetTempItemData()
+	return self.TempItemData or {}
 end

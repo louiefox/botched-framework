@@ -1,5 +1,14 @@
+local function CheckLockerCooldown( ply )
+    if( CurTime() < (ply:Botched().LastLockerUse or 0)+1 ) then return false end
+    ply:Botched().LastLockerUse = CurTime()
+
+    return true
+end
+
 util.AddNetworkString( "Botched.RequestUseLockerItem" )
 net.Receive( "Botched.RequestUseLockerItem", function( len, ply )
+    if( not CheckLockerCooldown( ply ) ) then return end
+
     local itemKey = net.ReadString()
     local amount = net.ReadUInt( 16 )
 
@@ -20,6 +29,8 @@ end )
 
 util.AddNetworkString( "Botched.RequestEquipLockerItem" )
 net.Receive( "Botched.RequestEquipLockerItem", function( len, ply )
+    if( not CheckLockerCooldown( ply ) ) then return end
+
     local itemKey = net.ReadString()
     if( not itemKey ) then return end
 
@@ -36,11 +47,15 @@ net.Receive( "Botched.RequestEquipLockerItem", function( len, ply )
     ply:Botched():SetLocker( lockerTable )
     ply:Botched():SendLockerItems( { itemKey } )
 
+    BOTCHED.FUNC.SQLQuery( "UPDATE botched_locker SET equipped = true WHERE userID = '" .. ply:Botched():GetUserID() .. "' AND itemKey = '" .. itemKey .. "';" )
+
     typeConfig.EquipFunction( ply, unpack( configItem.TypeInfo ) )
 end )
 
 util.AddNetworkString( "Botched.RequestUnEquipLockerItem" )
 net.Receive( "Botched.RequestUnEquipLockerItem", function( len, ply )
+    if( not CheckLockerCooldown( ply ) ) then return end
+    
     local itemKey = net.ReadString()
     if( not itemKey ) then return end
 
@@ -56,6 +71,8 @@ net.Receive( "Botched.RequestUnEquipLockerItem", function( len, ply )
     lockerTable[itemKey].Equipped = false
     ply:Botched():SetLocker( lockerTable )
     ply:Botched():SendLockerItems( { itemKey } )
+
+    BOTCHED.FUNC.SQLQuery( "UPDATE botched_locker SET equipped = false WHERE userID = '" .. ply:Botched():GetUserID() .. "' AND itemKey = '" .. itemKey .. "';" )
 
     typeConfig.UnEquipFunction( ply, unpack( configItem.TypeInfo ) )
 end )

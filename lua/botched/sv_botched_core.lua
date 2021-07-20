@@ -36,7 +36,6 @@ function BOTCHED.FUNC.SendOpenMenu( ply, type )
 	net.Send( ply )
 end
 
-util.AddNetworkString( "Botched.SendUseOpenMenu" )
 hook.Add( "PlayerSay", "Botched.PlayerSay.MenuCommands", function( ply, text )
 	text = string.lower( text )
 
@@ -45,5 +44,13 @@ hook.Add( "PlayerSay", "Botched.PlayerSay.MenuCommands", function( ply, text )
 
 		BOTCHED.FUNC.SendOpenMenu( ply, k )
 		return ""
+	end
+end )
+
+hook.Add( "PlayerButtonDown", "Botched.PlayerButtonDown.MenuKeys", function( ply, button )
+	for k, v in pairs( BOTCHED.CONFIG.GENERAL.Menus ) do
+		if( not v.Keys or not v.Keys[button] ) then continue end
+
+		BOTCHED.FUNC.SendOpenMenu( ply, k )
 	end
 end )

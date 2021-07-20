@@ -23,6 +23,22 @@ hook.Add( "PlayerInitialSpawn", "Botched.PlayerInitialSpawn.LoadData", function(
 
                 ply:Botched():SetLocker( lockerData )
                 ply:Botched():SendLockerItems( table.GetKeys( lockerData ) )
+
+                timer.Simple( 1, function()
+                    if( not IsValid( ply ) ) then return end
+
+                    for k, v in pairs( ply:Botched():GetLocker() ) do
+                        if( not v.Equipped ) then continue end
+                            
+                        local configItem = BOTCHED.CONFIG.LOCKER.Items[k]
+                        if( not configItem ) then continue end
+                    
+                        local typeConfig = BOTCHED.DEVCONFIG.ItemTypes[configItem.Type]
+                        if( not typeConfig or not typeConfig.EquipFunction ) then continue end
+
+                        typeConfig.EquipFunction( ply, unpack( configItem.TypeInfo ) )
+                    end
+                end )
             end )
 
 			hook.Run( "Botched.Hooks.PlayerLoadData", ply, userID )
