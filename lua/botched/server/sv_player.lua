@@ -105,7 +105,7 @@ function BOTCHED.PLAYERMETA:SendLockerItems( itemsTable )
             net.WriteString( v )
             net.WriteBool( lockerItem == nil )
 
-            if( not lockerItem ) then continue end
+            if( lockerItem == nil ) then continue end
             net.WriteUInt( lockerItem.Amount or 1, 32 )
             net.WriteBool( lockerItem.Equipped )
         end

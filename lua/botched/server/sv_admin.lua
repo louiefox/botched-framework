@@ -60,6 +60,7 @@ net.Receive( "Botched.RequestSaveConfigChanges", function( len, ply )
     end
 
     print( "[BOTCHED FRAMEWORK] Config Saved: " .. table.Count( changedConfig ) .. " Module(s), " .. variableCount .. " Variable(s)" )
+    BOTCHED.FUNC.SendNotification( ply, "CONFIG SAVED", "Config successfully saved!", "settings" )
 
     BOTCHED.FUNC.SendConfigUpdate( player.GetAll(), changedConfig )
 end )
@@ -75,7 +76,7 @@ adminCommands["setgems"] = {
         ply:Botched():SetGems( gems )
 
         if( not IsValid( caller ) ) then return end
-        BOTCHED.FUNC.SendNotification( caller, 1, 5, "Set " .. ply:Nick() .. "'s gems to ".. gems .. "!" )
+        BOTCHED.FUNC.SendNotification( caller, "ADMIN CMD", "Set " .. ply:Nick() .. "'s gems to ".. string.Comma( gems ) .. "!", "admin" )
     end
 }
 adminCommands["settokens"] = {
@@ -87,7 +88,7 @@ adminCommands["settokens"] = {
         ply:Botched():SetExchangeTokens( tokens )
 
         if( not IsValid( caller ) ) then return end
-        BOTCHED.FUNC.SendNotification( caller, 1, 5, "Set " .. ply:Nick() .. "'s tokens to ".. tokens .. "!" )
+        BOTCHED.FUNC.SendNotification( caller, "ADMIN CMD", "Set " .. ply:Nick() .. "'s tokens to ".. string.Comma( tokens ) .. "!", "admin" )
     end
 }
 adminCommands["giveitem"] = {
@@ -98,12 +99,13 @@ adminCommands["giveitem"] = {
     },
     Func = function( caller, ply, itemKey, amount )
         ply:Botched():AddLockerItems( itemKey, amount )
+        BOTCHED.FUNC.SendItemNotification( ply, "ADMIN GAVE", itemKey )
 
         local itemConfig = BOTCHED.CONFIG.LOCKER.Items[itemKey]
         if( not itemConfig ) then return end
 
         if( not IsValid( caller ) ) then return end
-        BOTCHED.FUNC.SendNotification( caller, 1, 5, "Given " .. ply:Nick() .. " ".. amount .. " " .. itemConfig.Name .. "!" )
+        BOTCHED.FUNC.SendNotification( caller, "ADMIN CMD", "Given " .. ply:Nick() .. " ".. amount .. " " .. itemConfig.Name .. "!", "admin" )
     end
 }
 adminCommands["givegempackage"] = {
@@ -118,7 +120,7 @@ adminCommands["givegempackage"] = {
         if( not packageConfig ) then return end
 
         if( not IsValid( caller ) ) then return end
-        BOTCHED.FUNC.SendNotification( caller, 1, 5, "Given " .. ply:Nick() .. " " .. packageConfig.Name .. "!" )
+        BOTCHED.FUNC.SendNotification( caller, "ADMIN CMD", "Given " .. ply:Nick() .. " " .. packageConfig.Name .. "!", "admin" )
     end
 }
 

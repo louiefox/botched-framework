@@ -7,8 +7,7 @@ end )
 net.Receive( "Botched.SendLockerItems", function()
     local lockerData = BOTCHED.LOCALPLYMETA.LockerData or {}
 
-    local amount = net.ReadUInt( 10 )
-    for i = 1, amount do
+    for i = 1, net.ReadUInt( 10 ) do
         local itemKey, shouldDelete = net.ReadString(), net.ReadBool()
 
         if( shouldDelete ) then

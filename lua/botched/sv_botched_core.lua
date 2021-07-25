@@ -21,11 +21,20 @@ end
 
 -- CORE --
 util.AddNetworkString( "Botched.SendNotification" )
-function BOTCHED.FUNC.SendNotification( ply, type, time, message )
+function BOTCHED.FUNC.SendNotification( ply, title, message, icon )
 	net.Start( "Botched.SendNotification" )
-		net.WriteString( message or "" )
-		net.WriteUInt( (type or 1), 8)
-		net.WriteUInt( (time or 3), 8)
+		net.WriteString( title )
+		net.WriteString( message )
+		if( icon ) then net.WriteString( icon ) end
+	net.Send( ply )
+end
+
+util.AddNetworkString( "Botched.SendItemNotification" )
+function BOTCHED.FUNC.SendItemNotification( ply, title, itemKey, amount )
+	net.Start( "Botched.SendItemNotification" )
+		net.WriteString( title )
+		net.WriteString( itemKey )
+		if( amount ) then net.WriteInt( amount, 16 ) end
 	net.Send( ply )
 end
 

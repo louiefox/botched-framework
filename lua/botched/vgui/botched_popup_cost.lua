@@ -123,7 +123,7 @@ function PANEL:SetCostTable( costTable, doClick, cantAffordFunc )
     continueButton.DoClick = function()
         if( not LocalPlayer():Botched():CanAfford( costTable ) ) then
             if( not cantAffordFunc ) then
-                notification.AddLegacy( "You cannot afford this!", 1, 3 )
+                BOTCHED.FUNC.CreateNotification( "MENU ERROR", "You cannot afford this!", "error" )
             else
                 cantAffordFunc()
             end

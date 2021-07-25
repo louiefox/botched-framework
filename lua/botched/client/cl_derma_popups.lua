@@ -339,7 +339,7 @@ function BOTCHED.FUNC.DermaComboRequest( text, title, options, default, searchSe
 		if( value and data ) then
             if( confirmFunc ) then confirmFunc( value, data ) end
 		else
-			notification.AddLegacy( "You need to select a value!", 1, 3 )
+            BOTCHED.FUNC.CreateNotification( "MENU ERROR", "You need to select a value!", "error" )
 		end
     end )
     createButton( cancelText, cancelFunc )

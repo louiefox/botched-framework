@@ -1,6 +1,6 @@
 concommand.Add( "botched_save_ents", function( ply, cmd, args )
 	if( not BOTCHED.FUNC.HasAdminAccess( ply ) ) then 
-		BOTCHED.FUNC.SendNotification( ply, 1, 5, "You don't have admin access!" )
+		BOTCHED.FUNC.SendNotification( ply, "ACCESS ERROR", "You don't have admin access!", "error" )
 		return 
 	end
 
@@ -24,12 +24,12 @@ concommand.Add( "botched_save_ents", function( ply, cmd, args )
 	end
 	
 	file.Write( "botched/saved_ents/".. string.lower( game.GetMap() ) ..".txt", util.TableToJSON( entities ), "DATA" )
-	BOTCHED.FUNC.SendNotification( ply, 1, 5, "Entity postions successfully saved!" )
+	BOTCHED.FUNC.SendNotification( ply, "ENTITY SAVING", "Entity postions successfully saved!", "admin" )
 end )
 
 concommand.Add( "botched_clear_ents", function( ply, cmd, args )
 	if( not BOTCHED.FUNC.HasAdminAccess( ply ) ) then 
-		BOTCHED.FUNC.SendNotification( ply, 1, 5, "You don't have admin access!" )
+		BOTCHED.FUNC.SendNotification( ply, "ACCESS ERROR", "You don't have admin access!", "error" )
 		return 
 	end
 

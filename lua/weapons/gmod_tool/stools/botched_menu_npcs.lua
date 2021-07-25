@@ -5,8 +5,8 @@ TOOL.ConfigName = ""
 
 function TOOL:LeftClick( trace )
 	local ply = self:GetOwner()
-	if( not BOTCHED.FUNC.HasAdminAccess( ply ) ) then
-		notification.AddLegacy( "You don't have permission to use this tool!", 1, 5 )
+	if( not BOTCHED.FUNC.HasAdminAccess( ply ) and CLIENT ) then
+		BOTCHED.FUNC.CreateNotification( "ACCESS ERROR", "You don't have permission to use this tool!", "error" )
 		return
 	end
 	
@@ -16,14 +16,14 @@ function TOOL:LeftClick( trace )
 	local menuType = ply:GetNWString( "botched_tool_menutype" )
 	local menuConfig = BOTCHED.CONFIG.GENERAL.Menus[menuType or ""]
 	if( not menuConfig ) then 
-		BOTCHED.FUNC.SendNotification( ply, 1, 5, "Invalid menu type selected!" )
+		BOTCHED.FUNC.SendNotification( ply, "NPC TOOL", "Invalid menu type selected!", "error" )
 		return 
 	end
 
 	local npcKey = ply:GetNWInt( "botched_tool_npckey" )
 	local npcConfig = (menuConfig.NPCs or {})[npcKey or 0]
 	if( not npcConfig ) then 		
-		BOTCHED.FUNC.SendNotification( ply, 1, 5, "Invalid NPC key selected!" )
+		BOTCHED.FUNC.SendNotification( ply, "NPC TOOL", "Invalid NPC key selected!", "error" )
 		return  
 	end
 
@@ -33,14 +33,14 @@ function TOOL:LeftClick( trace )
 	ent:Spawn()
 	ent:SetMenuInfo( menuType, npcKey )
 	
-	BOTCHED.FUNC.SendNotification( ply, 1, 5, "Menu NPC successfully placed." )
+	BOTCHED.FUNC.SendNotification( ply, "NPC TOOL", "Menu NPC successfully placed.", "admin" )
 	ply:ConCommand( "botched_save_ents" )
 end
  
 function TOOL:RightClick( trace )
 	local ply = self:GetOwner()
 	if( not BOTCHED.FUNC.HasAdminAccess( ply ) ) then
-		notification.AddLegacy( "You don't have permission to use this tool!", 1, 5 )
+		BOTCHED.FUNC.CreateNotification( "ACCESS ERROR", "You don't have permission to use this tool!", "error" )
 		return
 	end
 
@@ -48,7 +48,7 @@ function TOOL:RightClick( trace )
 	if( CLIENT ) then return true end
 	
 	trace.Entity:Remove()
-	BOTCHED.FUNC.SendNotification( ply, 1, 5, "Menu NPC successfully removed." )
+	BOTCHED.FUNC.SendNotification( ply, "NPC TOOL", "Menu NPC successfully removed.", "admin" )
 	ply:ConCommand( "botched_save_ents" )
 end
 

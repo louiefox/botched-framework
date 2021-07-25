@@ -29,7 +29,11 @@ concommand.Add( "botched_removeonclose", function()
 end )
 
 net.Receive( "Botched.SendNotification", function()
-    notification.AddLegacy( net.ReadString(), net.ReadUInt( 8 ) or 1, net.ReadUInt( 8 ) or 3 )
+	BOTCHED.FUNC.CreateNotification( net.ReadString(), net.ReadString(), net.ReadString() )
+end )
+
+net.Receive( "Botched.SendItemNotification", function()
+	BOTCHED.FUNC.CreateItemNotification( net.ReadString(), net.ReadString(), net.ReadInt( 16 ) )
 end )
 
 net.Receive( "Botched.SendOpenMenu", function()
