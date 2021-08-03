@@ -11,7 +11,6 @@ function PANEL:SetItemInfo( itemKey, amount, doClick, uniqueID )
     if( not configItem ) then return end
 
     local itemTypeConfig = BOTCHED.DEVCONFIG.ItemTypes[configItem.Type]
-    if( not itemTypeConfig ) then return end
 
     self.uniqueID = uniqueID or configItem.Name
 
@@ -52,7 +51,7 @@ function PANEL:SetItemInfo( itemKey, amount, doClick, uniqueID )
             end
     
             if( IsValid( self.model.Entity ) ) then
-                if( not itemTypeConfig.ModelDisplay ) then
+                if( not (itemTypeConfig or {}).ModelDisplay ) then
                     local mn, mx = self.model.Entity:GetModelBounds()
                     local size = 0
                     size = math.max( size, math.abs(mn.x) + math.abs(mx.x) )
