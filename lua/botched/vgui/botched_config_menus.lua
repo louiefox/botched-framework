@@ -19,8 +19,10 @@ function PANEL:Refresh()
 
     local menuTotalH = -panelSpacing
     for k, v in pairs( BOTCHED.DEVCONFIG.MenuTypes ) do
+        values[k] = values[k] or {}
+
         local title = string.upper( v.Title )
-        local menuValues = values[k] or {}
+        local menuValues = values[k]
 
         local margin10 = BOTCHED.FUNC.ScreenScale( 10 )
         local headerH = BOTCHED.FUNC.ScreenScale( 30 )
@@ -86,7 +88,8 @@ function PANEL:Refresh()
             return panel
         end
 
-        for key, val in pairs( menuValues.Commands or {} ) do
+        menuValues.Commands = menuValues.Commands or {}
+        for key, val in pairs( menuValues.Commands ) do
             local panel = CreateOpenTypePanel( commandsIcon, BOTCHED.FUNC.ScreenScale( 60 ), "Commands", key )
 
             local textEntry = vgui.Create( "botched_textentry", panel )
@@ -107,7 +110,8 @@ function PANEL:Refresh()
             end
         end
 
-        for key, val in pairs( menuValues.NPCs or {} ) do
+        menuValues.NPCs = menuValues.NPCs or {}
+        for key, val in pairs( menuValues.NPCs ) do
             local entryH = BOTCHED.FUNC.ScreenScale( 40 )
             local panel = CreateOpenTypePanel( npcsIcon, (3*margin10)+(2*entryH), "NPCs", key )
 
@@ -151,7 +155,8 @@ function PANEL:Refresh()
             entriesBack:AddEntry( "Model" )
         end
 
-        for key, val in pairs( menuValues.Keys or {} ) do
+        menuValues.Keys = menuValues.Keys or {}
+        for key, val in pairs( menuValues.Keys ) do
             local panel = CreateOpenTypePanel( keyIcon, BOTCHED.FUNC.ScreenScale( 60 ), "Keys", key )
 
             local comboEntry = vgui.Create( "botched_combosearch", panel )
