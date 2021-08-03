@@ -53,7 +53,7 @@ function PANEL:SetItemInfo( itemKey, amount, doClick, uniqueID )
     
             if( IsValid( self.model.Entity ) ) then
                 if( not itemTypeConfig.ModelDisplay ) then
-                    local mn, mx = self.model.Entity:GetRenderBounds()
+                    local mn, mx = self.model.Entity:GetModelBounds()
                     local size = 0
                     size = math.max( size, math.abs(mn.x) + math.abs(mx.x) )
                     size = math.max( size, math.abs(mn.y) + math.abs(mx.y) )

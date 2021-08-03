@@ -46,7 +46,8 @@ end
 local materialIcons = {
     ["admin"] = Material( "botched/icons/admin.png" ),
     ["error"] = Material( "botched/icons/error.png" ),
-    ["settings"] = Material( "botched/icons/settings.png" )
+    ["settings"] = Material( "botched/icons/settings.png" ),
+    ["reward"] = Material( "botched/icons/reward.png" )
 }
 
 function BOTCHED.FUNC.CreateNotification( title, text, icon )
