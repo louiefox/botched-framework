@@ -18,9 +18,13 @@ function PANEL:SetItemInfo( itemKey, amount, doClick, uniqueID )
     
     local model = configItem.Model
     if( not string.EndsWith( model, ".mdl" ) ) then
-        BOTCHED.FUNC.GetImage( model, function( mat )
-            self.iconMat = mat
-        end )
+        if( string.StartWith( model, "http" ) ) then
+            BOTCHED.FUNC.GetImage( model, function( mat )
+                self.iconMat = mat
+            end )
+        else
+            self.iconMat = Material( model )
+        end
     end
 
     self.hoverDraw = vgui.Create( "DPanel", self )
