@@ -79,11 +79,11 @@ function BOTCHED.PLAYERMETA:TakeCost( costTable )
 end
 
 function BOTCHED.PLAYERMETA:GiveReward( rewardTable )
-    for k, v in pairs( costTable ) do
+    for k, v in pairs( rewardTable ) do
         local devCfg = BOTCHED.DEVCONFIG.RewardTypes[k]
         if( not devCfg ) then continue end
 
-        devCfg.GiveReward( self, costTable )
+        devCfg.GiveReward( self, rewardTable )
     end
 
     if( rewardTable.Items ) then
