@@ -23,13 +23,12 @@ function BOTCHED.PLAYERMETA:GetUserID()
 end
 
 function BOTCHED.PLAYERMETA:CanAfford( costTable )
-	if( costTable.Gems and self:GetGems() < costTable.Gems ) then
-		return false
-	end
+	for k, v in pairs( costTable ) do
+        local devCfg = BOTCHED.DEVCONFIG.RewardTypes[k]
+        if( not devCfg ) then continue end
 
-	if( costTable.ExchangeTokens and self:GetExchangeTokens() < costTable.ExchangeTokens ) then
-		return false
-	end
+		if( not devCfg.CanAfford( self, costTable ) ) then return false end
+    end
 
 	return true
 end

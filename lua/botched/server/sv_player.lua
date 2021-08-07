@@ -70,13 +70,21 @@ function BOTCHED.PLAYERMETA:SetUserID( userID )
 end
 
 function BOTCHED.PLAYERMETA:TakeCost( costTable )
-    if( costTable.Gems ) then self:TakeGems( costTable.Gems ) end
-    if( costTable.ExchangeTokens ) then self:TakeExchangeTokens( costTable.ExchangeTokens ) end
+    for k, v in pairs( costTable ) do
+        local devCfg = BOTCHED.DEVCONFIG.RewardTypes[k]
+        if( not devCfg ) then continue end
+
+        devCfg.TakeCost( self, costTable )
+    end
 end
 
 function BOTCHED.PLAYERMETA:GiveReward( rewardTable )
-    if( rewardTable.Gems ) then self:AddGems( rewardTable.Gems ) end
-    if( rewardTable.ExchangeTokens ) then self:AddExchangeTokens( rewardTable.ExchangeTokens ) end
+    for k, v in pairs( costTable ) do
+        local devCfg = BOTCHED.DEVCONFIG.RewardTypes[k]
+        if( not devCfg ) then continue end
+
+        devCfg.GiveReward( self, costTable )
+    end
 
     if( rewardTable.Items ) then
         local itemsToGive = {}

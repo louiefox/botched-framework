@@ -87,12 +87,11 @@ function PANEL:SetCostTable( costTable, doClick, cantAffordFunc )
         itemEntries = itemEntries+1
     end
 
-    if( costTable.Gems ) then
-        AddItemEntry( LocalPlayer():Botched():GetGems(), costTable.Gems, "Gems", "materials/botched/icons/gems.png" )
-    end
+	for k, v in pairs( costTable ) do
+        local devCfg = BOTCHED.DEVCONFIG.RewardTypes[k]
+        if( not devCfg ) then continue end
 
-    if( costTable.ExchangeTokens ) then
-        AddItemEntry( LocalPlayer():Botched():GetExchangeTokens(), costTable.ExchangeTokens, "Exchange Tokens", "materials/botched/icons/magic_coin.png" )
+        AddItemEntry( devCfg.GetOwned( LocalPlayer():Botched() ), devCfg.GetAmount( costTable ), devCfg.Name, devCfg.Material )
     end
 
     for k, v in pairs( costTable.Items or {} ) do
