@@ -22,8 +22,7 @@ function PANEL:Init()
 	end
 end
 
-function PANEL:SelectChoice( index, steamID64 )
-	self.selected = index
+function PANEL:SelectChoice( steamID64 )
 	if( self.OnSelect ) then self:OnSelect( steamID64 ) end
 end
 
@@ -44,6 +43,12 @@ function PANEL:DoClick()
 	self:Open()
 end
 
+function PANEL:IgnorePlayers( ... )
+	self.ignoredPlayers = {}
+	for k, v in ipairs( { ... } ) do
+		self.ignoredPlayers[v] = true
+	end
+end
 
 function PANEL:Open()
 	if( IsValid( self.menu ) ) then return end
@@ -54,6 +59,7 @@ function PANEL:Open()
 
 	self.choices = {}
 	for k, v in pairs( player.GetAll() ) do
+		if( (self.ignoredPlayers or {})[v] ) then continue end
 		table.insert( self.choices, { v:Nick(), v:SteamID() } )
 	end
 
