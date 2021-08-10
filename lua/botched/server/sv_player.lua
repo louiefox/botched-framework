@@ -65,7 +65,7 @@ function BOTCHED.PLAYERMETA:SetUserID( userID )
     self.UserID = userID
 
     net.Start( "Botched.SendUserID" )
-        net.WriteUInt( userID, 10 )
+        net.WriteUInt( userID, 16 )
     net.Send( self.Player )
 end
 
