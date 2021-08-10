@@ -41,6 +41,21 @@ MODULE:AddVariable( "Menus", "Menu Settings", "Configure the ways to access cert
         Keys = {
             [KEY_F2] = true
         }
+    },
+    ["rewards"] = {
+        Commands = {
+            ["!rewards"] = true,
+            ["/rewards"] = true
+        },
+        NPCs = {
+            {
+                Name = "Rewards NPC",
+                Model = "models/breen.mdl"
+            }
+        },
+        Keys = {
+            [KEY_F1] = true
+        }
     }
 }, "botched_config_menus" )
 

@@ -201,7 +201,7 @@ function PANEL:Paint( w, h )
 	self:CreateFadeAlpha( 0.2, 155, false, false, self.opened, 155 )
 
 	local roundBottom = not self.opened
-	draw.RoundedBoxEx( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, 100+(self.alpha or 0) ), true, true, roundBottom, roundBottom )
+	draw.RoundedBoxEx( 8, 0, 0, w, h, BOTCHED.FUNC.GetTheme( 2, 150+(self.alpha or 0) ), true, true, roundBottom, roundBottom )
 
 	surface.SetDrawColor( self.textEntry.textEntry.backTextColor )
 	surface.SetMaterial( arrow16Mat )

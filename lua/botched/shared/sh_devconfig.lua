@@ -8,6 +8,9 @@ BOTCHED.DEVCONFIG.Colors = {
     Red = Color( 231, 76, 60 ),
     DarkRed = Color( 192, 57, 43 ),
 
+    Green = Color( 46, 204, 113 ),
+    DarkGreen = Color( 39, 174, 96 ),
+
     Blue = Color( 52, 152, 219 ),
     DarkBlue = Color( 41, 128, 185 ),
 
