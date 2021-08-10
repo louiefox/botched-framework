@@ -36,6 +36,10 @@ net.Receive( "Botched.SendItemNotification", function()
 	BOTCHED.FUNC.CreateItemNotification( net.ReadString(), net.ReadString(), net.ReadInt( 16 ) )
 end )
 
+net.Receive( "Botched.SendChatNotification", function()
+	chat.AddText( BOTCHED.FUNC.GetTheme( 3 ), net.ReadString(), BOTCHED.FUNC.GetTheme( 4 ), net.ReadString() )
+end )
+
 net.Receive( "Botched.SendOpenMenu", function()
 	local menuType = net.ReadString()
 	local menuConfig = BOTCHED.DEVCONFIG.MenuTypes[menuType or ""]

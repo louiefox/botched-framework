@@ -38,6 +38,14 @@ function BOTCHED.FUNC.SendItemNotification( ply, title, itemKey, amount )
 	net.Send( ply )
 end
 
+util.AddNetworkString( "Botched.SendChatNotification" )
+function BOTCHED.FUNC.SendChatNotification( ply, tag, text )
+	net.Start( "Botched.SendChatNotification" )
+		net.WriteString( tag )
+		net.WriteString( text )
+	net.Send( ply )
+end
+
 util.AddNetworkString( "Botched.SendOpenMenu" )
 function BOTCHED.FUNC.SendOpenMenu( ply, type )
 	net.Start( "Botched.SendOpenMenu" )
