@@ -15,6 +15,12 @@ function PANEL:Init()
         self.menu:Refresh( self.textEntry:GetValue() )
     end
 	self.textEntry.OnGetFocus = function()
+		if( self:GetPlayerCount() <= 0 ) then
+			self.textEntry:FocusNext()
+			BOTCHED.FUNC.CreateNotification( "LIST ERROR", "No available players were found!", "error" )
+			return
+		end
+
 		self:Open()
 	end
 	self.textEntry.OnLoseFocus = function( self2 )
@@ -38,16 +44,21 @@ function PANEL:DoRotationAnim( expanding )
 	end
 end
 
-function PANEL:DoClick()
-	if( self.opened or CurTime() < (self.lastDeleted or 0)+0.2 ) then return end
-	self:Open()
-end
-
 function PANEL:IgnorePlayers( ... )
 	self.ignoredPlayers = {}
 	for k, v in ipairs( { ... } ) do
 		self.ignoredPlayers[v] = true
 	end
+end
+
+function PANEL:GetPlayerCount()
+	local count = 0
+	for k, v in pairs( player.GetAll() ) do
+		if( (self.ignoredPlayers or {})[v] ) then continue end
+		count = count+1
+	end
+
+	return count
 end
 
 function PANEL:Open()
