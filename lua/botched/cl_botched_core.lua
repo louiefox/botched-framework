@@ -37,7 +37,7 @@ net.Receive( "Botched.SendItemNotification", function()
 end )
 
 net.Receive( "Botched.SendChatNotification", function()
-	chat.AddText( BOTCHED.FUNC.GetTheme( 3 ), net.ReadString(), BOTCHED.FUNC.GetTheme( 4 ), net.ReadString() )
+	chat.AddText( BOTCHED.FUNC.GetTheme( 3 ), net.ReadString() .. " ", BOTCHED.FUNC.GetTheme( 4 ), net.ReadString() )
 end )
 
 net.Receive( "Botched.SendOpenMenu", function()
