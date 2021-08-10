@@ -1,4 +1,5 @@
 -- DATA FUNCTIONS --
+util.AddNetworkString( "Botched.SendFirstSpawn" )
 hook.Add( "PlayerInitialSpawn", "Botched.PlayerInitialSpawn.LoadData", function( ply )
 	BOTCHED.FUNC.SQLQuery( "SELECT * FROM botched_players WHERE steamID64 = '" .. ply:SteamID64() .. "';", function( data )
         if( data ) then
@@ -57,6 +58,9 @@ hook.Add( "PlayerInitialSpawn", "Botched.PlayerInitialSpawn.LoadData", function(
     end, true )
 
     BOTCHED.FUNC.SendConfig( ply )
+
+    net.Start( "Botched.SendFirstSpawn" )
+    net.Send( ply )
 end )
 
 -- GENERAL FUNCTIONS --

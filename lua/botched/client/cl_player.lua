@@ -1,3 +1,8 @@
+-- DATA FUNCTIONS --
+net.Receive( "Botched.SendFirstSpawn", function()
+    hook.Run( "Botched.Hooks.FirstSpawn" )
+end )
+
 -- GENERAL FUNCTIONS --
 net.Receive( "Botched.SendUserID", function()
     BOTCHED.LOCALPLYMETA.UserID = net.ReadUInt( 16 )
