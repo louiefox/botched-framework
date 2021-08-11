@@ -35,6 +35,20 @@ function BOTCHED.FUNC.FormatLetterTime( time )
 	return formattedTime
 end
 
+function BOTCHED.FUNC.FormatLongLetterTime( time )
+	local timeTable = string.FormattedTime( time )
+	local days = math.floor( timeTable.h/24 )
+
+	local formattedTime
+	if( days > 0 ) then
+		formattedTime = string.format( "%dd %dh %dm", days, timeTable.h-(days*24), timeTable.m )
+	else
+		formattedTime = string.format( "%dh %dm %ds", timeTable.h, timeTable.m, timeTable.s )
+	end
+
+	return formattedTime
+end
+
 function BOTCHED.FUNC.UTCTime()
 	return os.time( os.date( "!*t" ) )
 end
