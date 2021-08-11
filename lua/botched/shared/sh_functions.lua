@@ -23,30 +23,24 @@ function BOTCHED.FUNC.FormatLetterTime( time )
 	local timeTable = string.FormattedTime( time )
 	local days = math.floor( timeTable.h/24 )
 
-	local formattedTime
 	if( days > 0 ) then
-		formattedTime = string.format( "%dd %dh", days, timeTable.h-(days*24) )
+		return string.format( "%dd %dh", days, timeTable.h-(days*24) )
 	elseif( timeTable.h > 0 ) then
-		formattedTime = string.format( "%dh %dm", timeTable.h, timeTable.m )
+		return string.format( "%dh %dm", timeTable.h, timeTable.m )
 	else
-		formattedTime = string.format( "%dm %ds", timeTable.m, timeTable.s )
+		return string.format( "%dm %ds", timeTable.m, timeTable.s )
 	end
-
-	return formattedTime
 end
 
 function BOTCHED.FUNC.FormatLongLetterTime( time )
 	local timeTable = string.FormattedTime( time )
 	local days = math.floor( timeTable.h/24 )
 
-	local formattedTime
 	if( days > 0 ) then
-		formattedTime = string.format( "%dd %dh %dm", days, timeTable.h-(days*24), timeTable.m )
+		return string.format( "%dd %dh %dm", days, timeTable.h-(days*24), timeTable.m )
 	else
-		formattedTime = string.format( "%dh %dm %ds", timeTable.h, timeTable.m, timeTable.s )
+		return string.format( "%dh %dm %ds", timeTable.h, timeTable.m, timeTable.s )
 	end
-
-	return formattedTime
 end
 
 function BOTCHED.FUNC.UTCTime()
