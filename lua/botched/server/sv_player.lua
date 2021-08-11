@@ -101,6 +101,20 @@ function BOTCHED.PLAYERMETA:GiveReward( rewardTable )
     end
 end
 
+function BOTCHED.PLAYERMETA:CheckNetworkDelay( time, key )
+    if( not self.NetworkDelays ) then
+        self.NetworkDelays = {}
+    end
+
+    if( self.NetworkDelays[key] and CurTime() < self.NetworkDelays[key]+time ) then 
+        return false 
+    end
+
+    self.NetworkDelays[key] = CurTime()
+
+    return true
+end
+
 -- LOCKER FUNCTIONS --
 function BOTCHED.PLAYERMETA:SetLocker( locker )
     self.LockerData = locker
