@@ -167,6 +167,9 @@ function PANEL:FillPanel()
                         if( not self.FullyOpened ) then return 0, 0 end
                         return self.startY+margin25, self.startY+self.actualH-margin25
                     end
+                    vguiElement.FullyOpened = function()
+                        return self.FullyOpened
+                    end
 
                     vguiElement.oldRefresh = vguiElement.Refresh
                     vguiElement.Refresh = function()
@@ -199,6 +202,8 @@ function PANEL:FillPanel()
     end
 
     hook.Add( "Botched.Hooks.ConfigUpdated", "Botched.Botched.Hooks.ConfigUpdated.ConfigPage", function() self:Refresh() end )
+
+    self:Refresh()
 end
 
 function PANEL:Refresh()

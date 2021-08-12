@@ -31,8 +31,6 @@ end
 function PANEL:OnOpenFinish()
     self:MakePopup()
     self.configPage.FullyOpened = true
-
-    self.configPage:Refresh()
 end
 
 function PANEL:CanClose()

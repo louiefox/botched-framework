@@ -209,7 +209,7 @@ function PANEL:Paint( w, h )
         self.shadowStartX, self.shadowStartY, self.shadowEndX, self.shadowEndY = self.shadowScissorFunc()
     end
 
-    if( not self.disableShadows or (self.shadowDisable and self.shadowDisable() == true) ) then
+    if( (not self.disableShadows or (self.shadowDisable and self.shadowDisable() == true)) and self.shadowEndY > self.shadowStartY and self.shadowEndX > self.shadowStartX ) then
         BOTCHED.FUNC.BeginShadow( self.uniqueID, self.shadowStartX, self.shadowStartY, self.shadowEndX, self.shadowEndY )
         BOTCHED.FUNC.SetShadowSize( self.uniqueID, w, h )
         local x, y = self:LocalToScreen( 0, 0 )
