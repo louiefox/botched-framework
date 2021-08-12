@@ -91,7 +91,7 @@ function PANEL:SetCostTable( costTable, doClick, cantAffordFunc )
         local devCfg = BOTCHED.DEVCONFIG.RewardTypes[k]
         if( not devCfg ) then continue end
 
-        AddItemEntry( devCfg.GetOwned( LocalPlayer():Botched() ), devCfg.GetAmount( costTable ), devCfg.Name, devCfg.Material )
+        AddItemEntry( devCfg.GetOwned( LocalPlayer():Botched() ), v, devCfg.Name, devCfg.Material )
     end
 
     for k, v in pairs( costTable.Items or {} ) do

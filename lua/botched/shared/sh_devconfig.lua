@@ -38,7 +38,6 @@ BOTCHED.DEVCONFIG.RewardTypes["Gems"] = {
     Material = "materials/botched/icons/gems_128.png",
     Stars = 3,
     Border = 3,
-    GetAmount = function( rewardTable ) return rewardTable.Gems end,
     GetOwned = function( self ) return self:GetGems() end,
     GiveReward = function( self, rewardTable ) self:AddGems( rewardTable.Gems ) end,
     TakeCost = function( self, costTable ) self:TakeGems( costTable.Gems ) end,
@@ -49,7 +48,6 @@ BOTCHED.DEVCONFIG.RewardTypes["ExchangeTokens"] = {
     Material = "materials/botched/icons/magic_coin_64.png",
     Stars = 3,
     Border = 3,
-    GetAmount = function( rewardTable ) return rewardTable.ExchangeTokens end,
     GetOwned = function( self ) return self:GetExchangeTokens() end,
     GiveReward = function( self, rewardTable ) self:AddExchangeTokens( rewardTable.ExchangeTokens ) end,
     TakeCost = function( self, costTable ) self:TakeExchangeTokens( costTable.ExchangeTokens ) end,
@@ -60,10 +58,9 @@ BOTCHED.DEVCONFIG.RewardTypes["Money"] = {
     Material = "models/props/cs_assault/money.mdl",
     Stars = 3,
     Border = 3,
-    GetAmount = function( rewardTable ) return rewardTable.Money end,
     GetOwned = function( self ) return self.Player:getDarkRPVar( "money" ) end,
-    GiveReward = function( self, rewardTable ) self:addMoney( rewardTable.Money ) end,
-    TakeCost = function( self, costTable ) self:takeMoney( costTable.Money ) end,
+    GiveReward = function( self, rewardTable ) self.Player:addMoney( rewardTable.Money ) end,
+    TakeCost = function( self, costTable ) self.Player:takeMoney( costTable.Money ) end,
     CanAfford = function( self, costTable ) return self.Player:getDarkRPVar( "money" ) >= costTable.Money end
 }
 

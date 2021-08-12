@@ -57,3 +57,22 @@ function BOTCHED.FUNC.CanOwnMultiple( itemKey )
 
 	return BOTCHED.DEVCONFIG.ItemTypes[configItem.Type] and not BOTCHED.DEVCONFIG.ItemTypes[configItem.Type].Permanent
 end
+
+function BOTCHED.FUNC.MergeRewardTables( ... )
+	local rewardsTable = {}
+	for _, tableToAdd in pairs( { ... } ) do
+		if( tableToAdd.Items ) then
+			rewardsTable.Items = rewardsTable.Items or {}
+			for k, v in pairs( tableToAdd.Items ) do
+				rewardsTable.Items[k] = (rewardsTable.Items[k] or 0)+v
+			end
+		end
+
+		for k, v in pairs( tableToAdd ) do
+			if( k == "Items" ) then continue end
+			rewardsTable[k] = (rewardsTable[k] or 0)+v
+		end
+	end
+
+	return rewardsTable
+end
