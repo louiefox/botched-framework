@@ -20,6 +20,7 @@ function PANEL:Init()
     self.navigation:AddPage( "PLAYERS", Material( "materials/botched/icons/players.png" ), playersPage )
 
     self.configPage = vgui.Create( "botched_adminmenu_config", self.navigation )
+    self.configPage.actualH = self.targetH-self.headerSize-self.navigation.navigationPanel:GetTall()
     self.navigation:AddPage( "CONFIG", Material( "materials/botched/icons/settings.png" ), self.configPage )
 
     self.navigation:SetActivePage( 3 )

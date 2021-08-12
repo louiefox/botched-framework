@@ -135,6 +135,11 @@ function PANEL:SetItemInfo( itemKey, amount, doClick, uniqueID )
 end
 
 function PANEL:SetShadowScissor( x, y, w, h )
+    if( isfunction( x ) ) then
+        self.shadowScissorFunc = x
+        return
+    end
+
     self.shadowStartX, self.shadowStartY, self.shadowEndX, self.shadowEndY = x, y, w, h
 end
 
@@ -199,6 +204,10 @@ end
 
 function PANEL:Paint( w, h )
     if( not self.uniqueID ) then return end
+
+    if( self.shadowScissorFunc ) then
+        self.shadowStartX, self.shadowStartY, self.shadowEndX, self.shadowEndY = self.shadowScissorFunc()
+    end
 
     if( not self.disableShadows or (self.shadowDisable and self.shadowDisable() == true) ) then
         BOTCHED.FUNC.BeginShadow( self.uniqueID, self.shadowStartX, self.shadowStartY, self.shadowEndX, self.shadowEndY )

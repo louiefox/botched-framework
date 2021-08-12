@@ -152,19 +152,6 @@ function PANEL:FillPanel()
                         if( cookie.GetNumber( "botched.configexpanded." .. val.Key, 1 ) != newValue ) then
                             cookie.Set( "botched.configexpanded." .. val.Key, newValue )
                         end
-
-                        if( vguiElement.SetYShadowScissor ) then
-                            local startY, endY = vguiElement.GetYShadowScissor()
-                            
-                            if( expanded ) then
-                                timer.Simple( 0.2, function() 
-                                    if( not IsValid( vguiElement ) ) then return end
-                                    vguiElement:SetYShadowScissor( startY, endY ) 
-                                end )
-                            else
-                                vguiElement:SetYShadowScissor( startY, startY ) 
-                            end
-                        end
                     end
                     button.DoClick = function( self2 )
                         self2:SetExpanded( variablePanel:GetTall() <= headerH )
@@ -178,7 +165,7 @@ function PANEL:FillPanel()
                     vguiElement:SetWide( self:GetWide()-self.navigation:GetWide()-(4*margin25)-(2*margin10) )
                     vguiElement.GetYShadowScissor = function()
                         if( not self.FullyOpened ) then return 0, 0 end
-                        return self.startY+25, self.startY+self.actualH-25
+                        return self.startY+margin25, self.startY+self.actualH-margin25
                     end
 
                     vguiElement.oldRefresh = vguiElement.Refresh
@@ -447,7 +434,6 @@ end
 
 function PANEL:Paint( w, h )
     self.startY = select( 2, self:LocalToScreen( 0, 0 ) )
-    self.actualH = h
 end
 
 vgui.Register( "botched_adminmenu_config", PANEL, "DPanel" )

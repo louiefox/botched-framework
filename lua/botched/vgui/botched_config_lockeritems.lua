@@ -17,8 +17,6 @@ function PANEL:Refresh()
     self.grid:SetSpaceY( spacing )
     self.grid:SetSpaceX( spacing )
 
-    local startY, endY = self.GetYShadowScissor()
-
     local items = BOTCHED.FUNC.GetChangedVariable( "LOCKER", "Items" ) or BOTCHED.CONFIGMETA.LOCKER:GetConfigValue( "Items" )
     
     local sortedItems = {}
@@ -37,7 +35,10 @@ function PANEL:Refresh()
         itemPanel:SetItemInfo( v, false, function()
             self:CreateItemPopup( v.Key, items )
         end )
-        itemPanel:SetShadowScissor( 0, startY, ScrW(), endY )
+        itemPanel:SetShadowScissor( function() 
+            local startY, endY = self.GetYShadowScissor()
+            return 0, startY, ScrW(), endY 
+        end )
     end
 
     local iconSize = BOTCHED.FUNC.ScreenScale( 64 )
@@ -51,8 +52,10 @@ function PANEL:Refresh()
     addNewButton.Paint = function( self2, w, h )
         self2:CreateFadeAlpha( 0.2, 50 )
 
+        local startY, endY = self.GetYShadowScissor()
+
         local uniqueID = "botched_config_item_add"
-        BOTCHED.FUNC.BeginShadow( uniqueID, 0, self2.startY, ScrW(), self2.endY )
+        BOTCHED.FUNC.BeginShadow( uniqueID, 0, startY, ScrW(), endY )
         local x, y = self2:LocalToScreen( 0, 0 )
         draw.RoundedBox( 8, x, y, w, h, BOTCHED.FUNC.GetTheme( 2 ) )		
         BOTCHED.FUNC.EndShadow( uniqueID, x, y, 1, 1, 2, 255, 0, 0, false )
@@ -69,11 +72,6 @@ function PANEL:Refresh()
 
         draw.SimpleText( "ADD NEW", "MontserratBold30", w/2, (h/2)+(contentH/2)+BOTCHED.FUNC.ScreenScale( 5 ), textColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM )
     end
-    addNewButton.SetShadowScissor = function( self2, startX, startY, endX, endY )
-        self2.startY = startY
-        self2.endY = endY
-    end
-    addNewButton:SetShadowScissor( 0, startY, ScrW(), endY )
     addNewButton.DoClick = function()
         BOTCHED.FUNC.DermaStringRequest( "Enter a unique item ID, no spaces, no capitals.", "ITEM CREATION", "uniqueid", false, function( value )
             if( items[value] ) then 
@@ -466,13 +464,6 @@ function PANEL:CreateItemPopup( itemKey, items )
     end
 
     typeSelect:SelectChoice( configItem.Type )
-end
-
-function PANEL:SetYShadowScissor( startY, endY )
-    for k, v in ipairs( self.grid:GetChildren() ) do
-        if( not v.SetShadowScissor ) then continue end
-        v:SetShadowScissor( 0, startY, ScrW(), endY )
-    end
 end
 
 function PANEL:Paint( w, h )
