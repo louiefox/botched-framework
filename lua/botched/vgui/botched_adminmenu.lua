@@ -33,6 +33,10 @@ function PANEL:OnOpenFinish()
     self.configPage.FullyOpened = true
 end
 
+function PANEL:OnOpenStart()
+    self.configPage:Refresh()
+end
+
 function PANEL:CanClose()
     return self.configPage:AttemptClose()
 end

@@ -97,6 +97,10 @@ function PANEL:Open( disablePopup, enableKeyboard )
         if( not self.OnOpenFinish ) then return end
         self:OnOpenFinish()
     end )
+
+    if( self.OnOpenStart ) then 
+        self:OnOpenStart()
+    end
 end
 
 function PANEL:Close()

@@ -202,8 +202,6 @@ function PANEL:FillPanel()
     end
 
     hook.Add( "Botched.Hooks.ConfigUpdated", "Botched.Botched.Hooks.ConfigUpdated.ConfigPage", function() self:Refresh() end )
-
-    self:Refresh()
 end
 
 function PANEL:Refresh()
