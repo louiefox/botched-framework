@@ -7,8 +7,6 @@ end
 function PANEL:Refresh()
     self:Clear()
 
-    local panelH, panelSpacing = BOTCHED.FUNC.ScreenScale( 150 ), BOTCHED.FUNC.ScreenScale( 10 )
-
     local gridWide = self:GetWide()
     local slotsWide = math.floor( gridWide/BOTCHED.FUNC.ScreenScale( 150 ) )
     local spacing = BOTCHED.FUNC.ScreenScale( 10 )
@@ -16,8 +14,8 @@ function PANEL:Refresh()
 
     self.grid = vgui.Create( "DIconLayout", self )
     self.grid:Dock( TOP )
-    self.grid:SetSpaceY( panelSpacing )
-    self.grid:SetSpaceX( panelSpacing )
+    self.grid:SetSpaceY( spacing )
+    self.grid:SetSpaceX( spacing )
 
     local startY, endY = self.GetYShadowScissor()
 
@@ -97,7 +95,7 @@ function PANEL:Refresh()
         end )
     end
 
-    self:SetTall( (math.ceil( (table.Count( items )+1)/slotsWide )*((slotSize*1.2)+panelSpacing))-panelSpacing )
+    self:SetTall( (math.ceil( (table.Count( items )+1)/slotsWide )*((slotSize*1.2)+spacing))-spacing )
 end
 
 function PANEL:CreateItemPopup( itemKey, items )
