@@ -85,7 +85,7 @@ end
 function BOTCHED.PLAYERMETA:GiveReward( rewardTable )
     for k, v in pairs( rewardTable ) do
         local devCfg = BOTCHED.DEVCONFIG.RewardTypes[k]
-        if( not devCfg ) then continue end
+        if( k == "Items" or not devCfg ) then continue end
 
         devCfg.GiveReward( self, rewardTable )
     end

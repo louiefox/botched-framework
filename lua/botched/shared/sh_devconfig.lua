@@ -33,8 +33,13 @@ BOTCHED.DEVCONFIG.EntityTypes["botched_menu_npc"] = {
 
 -- REWARD TYPES --
 BOTCHED.DEVCONFIG.RewardTypes = {}
+BOTCHED.DEVCONFIG.RewardTypes["Items"] = {
+    Name = "Locker Item",
+    Description = "An item created in the items config."
+}
 BOTCHED.DEVCONFIG.RewardTypes["Gems"] = {
     Name = "Gems",
+    Description = "Gems used for the gacha addon.",
     Material = "materials/botched/icons/gems_128.png",
     Stars = 3,
     Border = 3,
@@ -45,6 +50,7 @@ BOTCHED.DEVCONFIG.RewardTypes["Gems"] = {
 }
 BOTCHED.DEVCONFIG.RewardTypes["ExchangeTokens"] = {
     Name = "Exchange Tokens",
+    Description = "Tokens used for the gacha addon.",
     Material = "materials/botched/icons/magic_coin_64.png",
     Stars = 3,
     Border = 3,
@@ -55,6 +61,7 @@ BOTCHED.DEVCONFIG.RewardTypes["ExchangeTokens"] = {
 }
 BOTCHED.DEVCONFIG.RewardTypes["Money"] = {
     Name = "Money",
+    Description = "DarkRP Money to be given.",
     Material = "models/props/cs_assault/money.mdl",
     Stars = 3,
     Border = 3,
