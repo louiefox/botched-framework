@@ -17,7 +17,12 @@ function PANEL:Init()
 	self.textEntry.OnGetFocus = function()
 		if( self:GetPlayerCount() <= 0 ) then
 			self.textEntry:FocusNext()
-			BOTCHED.FUNC.CreateNotification( "LIST ERROR", "No available players were found!", "error" )
+
+			if( CurTime() >= (self.lastNotify or 0)+0.1 ) then
+				BOTCHED.FUNC.CreateNotification( "LIST ERROR", "No available players were found!", "error" )
+				self.lastNotify = CurTime()
+			end
+
 			return
 		end
 
