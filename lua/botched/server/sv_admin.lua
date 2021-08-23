@@ -67,30 +67,6 @@ end )
 
 -- Commands --
 local adminCommands = {}
-adminCommands["setgems"] = {
-    Arguments = {
-        [1] = { "Player", "Victim" },
-        [2] = { "Integer", "Gems" }
-    },
-    Func = function( caller, ply, gems )
-        ply:Botched():SetGems( gems )
-
-        if( not IsValid( caller ) ) then return end
-        BOTCHED.FUNC.SendNotification( caller, "ADMIN CMD", "Set " .. ply:Nick() .. "'s gems to ".. string.Comma( gems ) .. "!", "admin" )
-    end
-}
-adminCommands["settokens"] = {
-    Arguments = {
-        [1] = { "Player", "Victim" },
-        [2] = { "Integer", "Tokens" }
-    },
-    Func = function( caller, ply, tokens )
-        ply:Botched():SetExchangeTokens( tokens )
-
-        if( not IsValid( caller ) ) then return end
-        BOTCHED.FUNC.SendNotification( caller, "ADMIN CMD", "Set " .. ply:Nick() .. "'s tokens to ".. string.Comma( tokens ) .. "!", "admin" )
-    end
-}
 adminCommands["giveitem"] = {
     Arguments = {
         [1] = { "Player", "Victim" },
@@ -108,21 +84,48 @@ adminCommands["giveitem"] = {
         BOTCHED.FUNC.SendNotification( caller, "ADMIN CMD", "Given " .. ply:Nick() .. " ".. amount .. " " .. itemConfig.Name .. "!", "admin" )
     end
 }
-adminCommands["givegempackage"] = {
-    Arguments = {
-        [1] = { "Player", "Victim" },
-        [2] = { "String", "PackageKey" }
-    },
-    Func = function( caller, ply, packageKey )
-        ply:Botched():GiveGemPackage( packageKey )
 
-        local packageConfig = BOTCHED.CONFIG.GACHA.GemStore[packageKey]
-        if( not packageConfig ) then return end
+if( BOTCHED.CONFIG.GACHA ) then
+    adminCommands["setgems"] = {
+        Arguments = {
+            [1] = { "Player", "Victim" },
+            [2] = { "Integer", "Gems" }
+        },
+        Func = function( caller, ply, gems )
+            ply:Botched():SetGems( gems )
 
-        if( not IsValid( caller ) ) then return end
-        BOTCHED.FUNC.SendNotification( caller, "ADMIN CMD", "Given " .. ply:Nick() .. " " .. packageConfig.Name .. "!", "admin" )
-    end
-}
+            if( not IsValid( caller ) ) then return end
+            BOTCHED.FUNC.SendNotification( caller, "ADMIN CMD", "Set " .. ply:Nick() .. "'s gems to ".. string.Comma( gems ) .. "!", "admin" )
+        end
+    }
+    adminCommands["settokens"] = {
+        Arguments = {
+            [1] = { "Player", "Victim" },
+            [2] = { "Integer", "Tokens" }
+        },
+        Func = function( caller, ply, tokens )
+            ply:Botched():SetExchangeTokens( tokens )
+
+            if( not IsValid( caller ) ) then return end
+            BOTCHED.FUNC.SendNotification( caller, "ADMIN CMD", "Set " .. ply:Nick() .. "'s tokens to ".. string.Comma( tokens ) .. "!", "admin" )
+        end
+    }
+    adminCommands["givegempackage"] = {
+        Arguments = {
+            [1] = { "Player", "Victim" },
+            [2] = { "String", "PackageKey" }
+        },
+        Func = function( caller, ply, packageKey )
+            ply:Botched():GiveGemPackage( packageKey )
+
+            local packageConfig = BOTCHED.CONFIG.GACHA.GemStore[packageKey]
+            if( not packageConfig ) then return end
+
+            if( not IsValid( caller ) ) then return end
+            BOTCHED.FUNC.SendNotification( caller, "ADMIN CMD", "Given " .. ply:Nick() .. " " .. packageConfig.Name .. "!", "admin" )
+        end
+    }
+end
 
 concommand.Add( "botched_admincmd", function( ply, cmd, args )
     if( IsValid( ply ) and not BOTCHED.FUNC.HasAdminAccess( ply ) ) then return end

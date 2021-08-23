@@ -13,8 +13,8 @@ function PANEL:Init()
         return self.configPage:AttemptClose()
     end
 
-    local homePage = vgui.Create( "botched_adminmenu_home", self.navigation )
-    self.navigation:AddPage( "HOME", Material( "materials/botched/icons/home.png" ), homePage )
+    -- local homePage = vgui.Create( "botched_adminmenu_home", self.navigation )
+    -- self.navigation:AddPage( "HOME", Material( "materials/botched/icons/home.png" ), homePage )
 
     local playersPage = vgui.Create( "botched_adminmenu_players", self.navigation )
     self.navigation:AddPage( "PLAYERS", Material( "materials/botched/icons/players.png" ), playersPage )
@@ -23,7 +23,7 @@ function PANEL:Init()
     self.configPage.actualH = self.targetH-self.headerSize-self.navigation.navigationPanel:GetTall()
     self.navigation:AddPage( "CONFIG", Material( "materials/botched/icons/settings.png" ), self.configPage )
 
-    self.navigation:SetActivePage( 3 )
+    self.navigation:SetActivePage( 2 )
 
     self:Open()
 end

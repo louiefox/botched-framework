@@ -37,28 +37,6 @@ BOTCHED.DEVCONFIG.RewardTypes["Items"] = {
     Name = "Locker Item",
     Description = "An item created in the items config."
 }
-BOTCHED.DEVCONFIG.RewardTypes["Gems"] = {
-    Name = "Gems",
-    Description = "Gems used for the gacha addon.",
-    Material = "materials/botched/icons/gems_128.png",
-    Stars = 3,
-    Border = 3,
-    GetOwned = function( self ) return self:GetGems() end,
-    GiveReward = function( self, rewardTable ) self:AddGems( rewardTable.Gems ) end,
-    TakeCost = function( self, costTable ) self:TakeGems( costTable.Gems ) end,
-    CanAfford = function( self, costTable ) return self:GetGems() >= costTable.Gems end
-}
-BOTCHED.DEVCONFIG.RewardTypes["ExchangeTokens"] = {
-    Name = "Exchange Tokens",
-    Description = "Tokens used for the gacha addon.",
-    Material = "materials/botched/icons/magic_coin_64.png",
-    Stars = 3,
-    Border = 3,
-    GetOwned = function( self ) return self:GetExchangeTokens() end,
-    GiveReward = function( self, rewardTable ) self:AddExchangeTokens( rewardTable.ExchangeTokens ) end,
-    TakeCost = function( self, costTable ) self:TakeExchangeTokens( costTable.ExchangeTokens ) end,
-    CanAfford = function( self, costTable ) return self:GetExchangeTokens() >= costTable.ExchangeTokens end
-}
 BOTCHED.DEVCONFIG.RewardTypes["Money"] = {
     Name = "Money",
     Description = "DarkRP Money to be given.",
@@ -70,6 +48,31 @@ BOTCHED.DEVCONFIG.RewardTypes["Money"] = {
     TakeCost = function( self, costTable ) self.Player:takeMoney( costTable.Money ) end,
     CanAfford = function( self, costTable ) return self.Player:getDarkRPVar( "money" ) >= costTable.Money end
 }
+
+if( BOTCHED.CONFIG.GACHA ) then
+    BOTCHED.DEVCONFIG.RewardTypes["Gems"] = {
+        Name = "Gems",
+        Description = "Gems used for the gacha addon.",
+        Material = "materials/botched/icons/gems_128.png",
+        Stars = 3,
+        Border = 3,
+        GetOwned = function( self ) return self:GetGems() end,
+        GiveReward = function( self, rewardTable ) self:AddGems( rewardTable.Gems ) end,
+        TakeCost = function( self, costTable ) self:TakeGems( costTable.Gems ) end,
+        CanAfford = function( self, costTable ) return self:GetGems() >= costTable.Gems end
+    }
+    BOTCHED.DEVCONFIG.RewardTypes["ExchangeTokens"] = {
+        Name = "Exchange Tokens",
+        Description = "Tokens used for the gacha addon.",
+        Material = "materials/botched/icons/magic_coin_64.png",
+        Stars = 3,
+        Border = 3,
+        GetOwned = function( self ) return self:GetExchangeTokens() end,
+        GiveReward = function( self, rewardTable ) self:AddExchangeTokens( rewardTable.ExchangeTokens ) end,
+        TakeCost = function( self, costTable ) self:TakeExchangeTokens( costTable.ExchangeTokens ) end,
+        CanAfford = function( self, costTable ) return self:GetExchangeTokens() >= costTable.ExchangeTokens end
+    }
+end
 
 -- KEY BINDS --
 BOTCHED.DEVCONFIG.KeyBinds = {

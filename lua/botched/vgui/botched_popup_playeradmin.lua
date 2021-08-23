@@ -72,22 +72,6 @@ function PANEL:SetSteamID64( steamID64 )
     local ply = player.GetBySteamID64( steamID64 )
 
     local actions = {
-        ["setgems"] = {
-            Name = "Set Gems",
-            DoClick = function()
-                BOTCHED.FUNC.DermaNumberRequest( "What would you like to set their gems to?", "SET GEMS", 0, "Set", function( num )
-                    RunConsoleCommand( "botched_admincmd", "setgems", steamID64, num )
-                end )
-            end
-        },
-        ["settokens"] = {
-            Name = "Set Tokens",
-            DoClick = function()
-                BOTCHED.FUNC.DermaNumberRequest( "What would you like to set their tokens to?", "SET TOKENS", 0, "Set", function( num )
-                    RunConsoleCommand( "botched_admincmd", "settokens", steamID64, num )
-                end )
-            end
-        },
         ["giveitems"] = {
             Name = "Give Items",
             DoClick = function()
@@ -102,8 +86,27 @@ function PANEL:SetSteamID64( steamID64 )
                     end )
                 end )
             end
-        },
-        ["givegempackage"] = {
+        }
+    }
+
+    if( BOTCHED.CONFIG.GACHA ) then
+        actions["setgems"] = {
+            Name = "Set Gems",
+            DoClick = function()
+                BOTCHED.FUNC.DermaNumberRequest( "What would you like to set their gems to?", "SET GEMS", 0, "Set", function( num )
+                    RunConsoleCommand( "botched_admincmd", "setgems", steamID64, num )
+                end )
+            end
+        }
+        actions["settokens"] = {
+            Name = "Set Tokens",
+            DoClick = function()
+                BOTCHED.FUNC.DermaNumberRequest( "What would you like to set their tokens to?", "SET TOKENS", 0, "Set", function( num )
+                    RunConsoleCommand( "botched_admincmd", "settokens", steamID64, num )
+                end )
+            end
+        }
+        actions["givegempackage"] = {
             Name = "Give Gem Package",
             DoClick = function()
                 local options = {}
@@ -115,8 +118,8 @@ function PANEL:SetSteamID64( steamID64 )
                     RunConsoleCommand( "botched_admincmd", "givegempackage", steamID64, key )
                 end )
             end
-        },
-    }
+        }
+    end
 
     for k, v in pairs( actions ) do
         local actionButton = vgui.Create( "DButton", self.mainPanel )
