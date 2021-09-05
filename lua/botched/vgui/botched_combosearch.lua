@@ -198,7 +198,7 @@ function PANEL:OpenMenu( pControlOpener )
 	self.Menu.dontRoundTop = true
 	self.Menu:SetMinimumWidth( self:GetWide() )
 	self.Menu:Open( x, y, false, self )
-
+	self.Menu:MakePopup()
 end
 
 function PANEL:CloseMenu()
