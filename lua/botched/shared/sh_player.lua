@@ -2,6 +2,8 @@ local playerMeta = FindMetaTable( "Player" )
 
 function playerMeta:Botched()
 	if( SERVER ) then
+		if( not self ) then return false end
+
 		if( not self.BOTCHED_PLAYERMETA ) then
 			self.BOTCHED_PLAYERMETA = {
 				Player = self,
