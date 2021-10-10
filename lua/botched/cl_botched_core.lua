@@ -17,11 +17,23 @@ for k, v in pairs( file.Find( "botched/vgui/*.lua", "LUA" ) ) do
 end
 
 -- CORE --
-concommand.Add( "botched_admin", function( ply, cmd, args )
-    if( not BOTCHED.FUNC.HasAdminAccess( LocalPlayer() ) ) then return end
-    if( IsValid( BOTCHED_ADMINMENU ) ) then BOTCHED_ADMINMENU:Open() return end
+local function OpenAdminMenu()
+	if( not BOTCHED.FUNC.HasAdminAccess( LocalPlayer() ) ) then return false end
+	if( IsValid( BOTCHED_ADMINMENU ) ) then BOTCHED_ADMINMENU:Open() return true end
 
-    BOTCHED_ADMINMENU = vgui.Create( "botched_adminmenu" )
+	BOTCHED_ADMINMENU = vgui.Create( "botched_adminmenu" )
+	
+	return true
+end
+
+concommand.Add( "botched_admin", OpenAdminMenu )
+
+hook.Add( "OnPlayerChat", "Botched.OnPlayerChat.AdminMenu", function( ply, strText, bTeam, bDead ) 
+    if( ply != LocalPlayer() ) then return end
+
+	strText = string.lower( strText )
+
+	if ( strText == "!botchedadmin" ) then return OpenAdminMenu() end
 end )
 
 concommand.Add( "botched_removeonclose", function()
