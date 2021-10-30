@@ -1,3 +1,5 @@
+BOTCHED.DEVCONFIG.MenuTypes = BOTCHED.DEVCONFIG.MenuTypes or {}
+
 -- COLORS --
 BOTCHED.DEVCONFIG.Colors = { 
     Bronze = Color( 176, 122, 60 ),
