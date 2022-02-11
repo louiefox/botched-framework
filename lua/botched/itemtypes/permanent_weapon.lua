@@ -41,3 +41,28 @@ end
 
 hook.Add( "PlayerSpawn", "Botched.PlayerSpawn.PermWeapon", CheckPermWeapon )
 hook.Add( "PlayerChangedTeam", "Botched.PlayerChangedTeam.PermWeapon", CheckPermWeapon )
+
+local function ClearKind( ply, kind )
+    if( not kind ) then return end
+
+    for _, wep in ipairs( ply:GetWeapons() ) do
+        if( wep.Kind and wep.Kind == kind ) then
+            ply:StripWeapon( wep:GetClass() )
+
+            break
+        end
+    end
+end
+
+hook.Add( "TTTBeginRound", "BricksServerHooks_TTTBeginRound_UnboxingPerm", function() 
+    for _, ply in ipairs( player.GetAll() ) do
+        local activeWeapons = ply:Botched():GetTempItemData().ActiveWeapons
+        if( not activeWeapons ) then continue end
+
+        for k, v in pairs( activeWeapons ) do
+            ClearKind( ply, (weapons.Get( k ) or {}).Kind )
+
+            ply:Give( k )
+        end
+    end
+end )
