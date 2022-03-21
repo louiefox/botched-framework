@@ -50,6 +50,28 @@ BOTCHED.DEVCONFIG.RewardTypes["Money"] = {
     TakeCost = function( self, costTable ) self.Player:takeMoney( costTable.Money ) end,
     CanAfford = function( self, costTable ) return self.Player:getDarkRPVar( "money" ) >= costTable.Money end
 }
+BOTCHED.DEVCONFIG.RewardTypes["PS2"] = {
+    Name = "PS2 Points",
+    Description = "PS2 Points to be given.",
+    Material = "models/props/cs_assault/money.mdl",
+    Stars = 3,
+    Border = 3,
+    GetOwned = function( self ) return (self.Player.PS2_Wallet or {}).points or 0 end,
+    GiveReward = function( self, rewardTable ) self.Player:PS2_AddStandardPoints( rewardTable.PS2 ) end,
+    TakeCost = function( self, costTable ) self.Player:PS2_TakeStandardPoints( rewardTable.PS2 ) end,
+    CanAfford = function( self, costTable ) return ((self.Player.PS2_Wallet or {}).points or 0) >= costTable.PS2 end
+}
+BOTCHED.DEVCONFIG.RewardTypes["PS2Premium"] = {
+    Name = "PS2 Premium Points",
+    Description = "PS2 Premium Points to be given.",
+    Material = "models/props/cs_assault/money.mdl",
+    Stars = 3,
+    Border = 3,
+    GetOwned = function( self ) return (self.Player.PS2_Wallet or {}).premiumPoints or 0 end,
+    GiveReward = function( self, rewardTable ) self.Player:PS2_AddPremiumPoints( rewardTable.PS2Premium ) end,
+    TakeCost = function( self, costTable ) self.Player:PS2_TakePremiumPoints( rewardTable.PS2Premium ) end,
+    CanAfford = function( self, costTable ) return ((self.Player.PS2_Wallet or {}).premiumPoints or 0) >= costTable.PS2Premium end
+}
 
 if( BOTCHED.CONFIG.GACHA ) then
     BOTCHED.DEVCONFIG.RewardTypes["Gems"] = {
