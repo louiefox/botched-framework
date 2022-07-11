@@ -75,7 +75,7 @@ adminCommands["giveitem"] = {
     },
     Func = function( caller, ply, itemKey, amount )
         ply:Botched():AddLockerItems( itemKey, amount )
-        BOTCHED.FUNC.SendItemNotification( ply, "ADMIN GAVE", itemKey )
+        BOTCHED.FUNC.SendItemNotification( ply, "ADMIN GAVE", itemKey, amount )
 
         local itemConfig = BOTCHED.CONFIG.LOCKER.Items[itemKey]
         if( not itemConfig ) then return end

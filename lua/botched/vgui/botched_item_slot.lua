@@ -20,6 +20,7 @@ function PANEL:SetItemInfo( itemKey, amount, doClick, uniqueID )
     if( not string.EndsWith( model, ".mdl" ) ) then
         if( string.StartWith( model, "http" ) ) then
             BOTCHED.FUNC.GetImage( model, function( mat )
+                if( not IsValid( self ) ) then return end
                 self.iconMat = mat
             end )
         else

@@ -45,7 +45,7 @@ net.Receive( "Botched.SendNotification", function()
 end )
 
 net.Receive( "Botched.SendItemNotification", function()
-	BOTCHED.FUNC.CreateItemNotification( net.ReadString(), net.ReadString(), net.ReadInt( 16 ) )
+	BOTCHED.FUNC.CreateItemNotification( net.ReadString(), net.ReadString(), net.ReadBool() and net.ReadInt( 16 ) or 1 )
 end )
 
 net.Receive( "Botched.SendChatNotification", function()

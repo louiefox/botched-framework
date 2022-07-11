@@ -321,6 +321,7 @@ function PANEL:Refresh()
         self:SetDisplayItem( self.displayItemKey )
     else
         self.displayItemKey = nil
+        self.rightPanel:Clear()
     end
 
     for k, v in pairs( sortedInventory ) do

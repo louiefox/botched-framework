@@ -8,7 +8,7 @@ ITEM:AddReqInfo( BOTCHED.TYPE.String, "Arguments", "Using {steamid64} will input
 ITEM:SetAllowInstantUse( true )
 ITEM:SetUseFunction( function( ply, useAmount, command, arguments )
     for i = 1, useAmount do
-        RunConsoleCommand( command, string.Replace( arguments, "{steamid64}", ply:SteamID64() ) )
+        RunConsoleCommand( command, unpack( string.Split( string.Replace( arguments, "{steamid64}", ply:SteamID64() ), " " ) ) )
     end
 end )
 

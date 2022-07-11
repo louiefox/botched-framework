@@ -34,6 +34,7 @@ function BOTCHED.FUNC.SendItemNotification( ply, title, itemKey, amount )
 	net.Start( "Botched.SendItemNotification" )
 		net.WriteString( title )
 		net.WriteString( itemKey )
+		net.WriteBool( tobool( amount ) )
 		if( amount ) then net.WriteInt( amount, 16 ) end
 	net.Send( ply )
 end
