@@ -211,6 +211,7 @@ function PANEL:FillPanel()
                 elseif( val.Type == BOTCHED.TYPE.Bool ) then
                     local targetH = BOTCHED.FUNC.ScreenScale( 40 )
                     local margin = (variablePanel:GetTall()-targetH)/2
+                    
                     local checkBox = vgui.Create( "botched_checkbox", variablePanel )
                     checkBox:Dock( RIGHT )
                     checkBox:SetWide( variablePanel:GetTall()/2 )
