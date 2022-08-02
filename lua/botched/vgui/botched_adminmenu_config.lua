@@ -211,15 +211,13 @@ function PANEL:FillPanel()
                 elseif( val.Type == BOTCHED.TYPE.Bool ) then
                     local targetH = BOTCHED.FUNC.ScreenScale( 40 )
                     local margin = (variablePanel:GetTall()-targetH)/2
-
                     local checkBox = vgui.Create( "botched_checkbox", variablePanel )
                     checkBox:Dock( RIGHT )
                     checkBox:SetWide( variablePanel:GetTall()/2 )
                     checkBox:DockMargin( 0, margin, margin25, margin )
-                    checkBox:SetChecked( tobool( v:GetConfigValue( val.Key ) ) )
+                    checkBox:SetChecked( v:GetConfigValue( val.Key ) )
                     checkBox.OnChange = function( self2, checked )
-                        val.Key = checked
-                        BOTCHED.FUNC.RequestConfigChange( k, val.Key, val.Key )
+                        BOTCHED.FUNC.RequestConfigChange( k, val.Key, checked )
                     end
                 end
             end
@@ -404,6 +402,8 @@ function PANEL:CreateSavePopout()
 
         net.Start( "Botched.RequestSaveConfigChanges" )
             net.WriteUInt( table.Count( BOTCHED.TEMP.ChangedConfig ), 5 )
+
+            PrintTable(BOTCHED.TEMP.ChangedConfig)
      
             for k, v in pairs( BOTCHED.TEMP.ChangedConfig ) do
                 net.WriteString( k )
