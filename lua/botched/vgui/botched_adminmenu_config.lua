@@ -403,8 +403,6 @@ function PANEL:CreateSavePopout()
 
         net.Start( "Botched.RequestSaveConfigChanges" )
             net.WriteUInt( table.Count( BOTCHED.TEMP.ChangedConfig ), 5 )
-
-            PrintTable(BOTCHED.TEMP.ChangedConfig)
      
             for k, v in pairs( BOTCHED.TEMP.ChangedConfig ) do
                 net.WriteString( k )
