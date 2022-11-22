@@ -194,6 +194,32 @@ function PANEL:FillPanel()
                     numberWang.OnChange = function( self2 )
                         BOTCHED.FUNC.RequestConfigChange( k, val.Key, numberWang:GetValue() )
                     end
+                elseif( val.Type == BOTCHED.TYPE.String ) then
+                    local targetH = BOTCHED.FUNC.ScreenScale( 40 )
+                    local margin = (variablePanel:GetTall()-targetH)/2
+
+                    local textEntry = vgui.Create( "botched_textentry", variablePanel )
+                    textEntry:Dock( RIGHT )
+                    textEntry:DockMargin( 0, margin, margin25, margin )
+                    textEntry:SetWide( BOTCHED.FUNC.ScreenScale( 300 ) )
+                    textEntry:SetBackColor( BOTCHED.FUNC.GetTheme( 1 ) )
+                    textEntry:SetHighlightColor( BOTCHED.FUNC.GetTheme( 2, 50) )
+                    textEntry:SetValue( v:GetConfigValue( val.Key ) )
+                    textEntry.OnChange = function( self2 )
+                        BOTCHED.FUNC.RequestConfigChange( k, val.Key, textEntry:GetValue() )
+                    end
+                elseif( val.Type == BOTCHED.TYPE.Bool ) then
+                    local targetH = BOTCHED.FUNC.ScreenScale( 40 )
+                    local margin = (variablePanel:GetTall()-targetH)/2
+                    
+                    local checkBox = vgui.Create( "botched_checkbox", variablePanel )
+                    checkBox:Dock( RIGHT )
+                    checkBox:SetWide( variablePanel:GetTall()/2 )
+                    checkBox:DockMargin( 0, margin, margin25, margin )
+                    checkBox:SetChecked( v:GetConfigValue( val.Key ) )
+                    checkBox.OnChange = function( self2, checked )
+                        BOTCHED.FUNC.RequestConfigChange( k, val.Key, checked )
+                    end
                 end
             end
         end
